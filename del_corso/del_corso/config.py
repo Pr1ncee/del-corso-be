@@ -20,5 +20,12 @@ class GeneralConfig:
     TIME_ZONE = "Europe/Moscow"
 
 
+class AdminConfig:
+    USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+    EMAIL = os.getenv("ADMIN_EMAIL", "admin@admin.com")
+    PWD = os.getenv("ADMIN_PWD", "admin")
+
+
 general_config = GeneralConfig()
 postgres_config = PostgresConfig()
+admin_config = AdminConfig()

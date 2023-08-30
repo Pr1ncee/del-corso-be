@@ -39,8 +39,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Custom
+
+    # Third-party(external)
     "rest_framework",
+
+    # Custom(internal)
+    "authorization",
+    "discounts",
+    "orders",
+    "store",
 ]
 
 MIDDLEWARE = [
