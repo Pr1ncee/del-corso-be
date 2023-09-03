@@ -2,6 +2,7 @@ from django.core.validators import EmailValidator
 from django.db import models
 
 from base_models import BaseModel
+from orders.enums.status_enum import OrderStatus
 from store.models.product import Product
 from store.validators import validate_phone_number
 
@@ -23,6 +24,8 @@ class Order(BaseModel):
 
     order_date = models.DateField(verbose_name="Дата заказа")
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена заказа")
+
+    status = models.CharField(max_length=50, choices=OrderStatus.choices, default=OrderStatus.PENDING, verbose_name="Статус")
 
     def __str__(self):
         return f"{self.last_name} {self.first_name} - {self.telephone_number}"
