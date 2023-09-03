@@ -1,8 +1,10 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from base_models import BaseModel
 
-class SeasonCategory(models.Model):
+
+class SeasonCategory(BaseModel):
     name = models.CharField(max_length=20, verbose_name="Название")
 
     class Meta:
@@ -14,7 +16,7 @@ class SeasonCategory(models.Model):
         return self.name
 
 
-class TypeCategory(models.Model):
+class TypeCategory(BaseModel):
     name = models.CharField(max_length=20, verbose_name="Название")
     is_popular = models.BooleanField(default=False, verbose_name="Популярная категория")
 
@@ -27,13 +29,13 @@ class TypeCategory(models.Model):
         return self.name
 
 
-class Size(models.Model):
+class Size(BaseModel):
     size = models.IntegerField(
         validators=[
             MinValueValidator(36, message="Допустимый размер: 36-40."),
             MaxValueValidator(40, message="Допустимый размер: 36-40."),
         ],
-        verbose_name="Название"
+        verbose_name="Размер"
     )
 
     def __str__(self):
@@ -45,7 +47,7 @@ class Size(models.Model):
         verbose_name_plural = "Размеры"
 
 
-class Color(models.Model):
+class Color(BaseModel):
     color = models.CharField(max_length=20, verbose_name="Цвет")
 
     def __str__(self):

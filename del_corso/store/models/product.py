@@ -1,14 +1,15 @@
 from django.db import models
 
+from base_models import BaseModel
 from store.models.category import SeasonCategory, TypeCategory, Size, Color
 
 from del_corso.config import general_config
 
 
-class Product(models.Model):
+class Product(BaseModel):
     name = models.CharField(max_length=100, verbose_name="Название")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
-    description = models.TextField(verbose_name="Описание")
+    description = models.TextField(verbose_name="Описание", blank=True, null=True)
     vendor_code = models.CharField(max_length=100, verbose_name="Артикул")
 
     size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Размер")
@@ -25,7 +26,7 @@ class Product(models.Model):
         verbose_name_plural = "Товары"
 
 
-class ProductImage(models.Model):
+class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
     image = models.FileField(upload_to=general_config.TARGET_IMAGE_DIR, verbose_name="Изображение")
 
