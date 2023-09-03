@@ -1,3 +1,15 @@
 from django.contrib import admin
 
-# Register your models here.
+from discounts.models import Discount, ProductDiscount
+
+
+class DiscountAdmin(admin.ModelAdmin):
+    model = Discount
+
+
+class ProductDiscountAdmin(admin.ModelAdmin):
+    model = ProductDiscount
+
+
+admin.site.register(Discount, DiscountAdmin)
+admin.site.register(ProductDiscount, ProductDiscountAdmin)

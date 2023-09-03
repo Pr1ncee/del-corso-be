@@ -18,6 +18,7 @@ class GeneralConfig:
     DEBUG = True
     LANGUAGE_CODE = "ru"
     TIME_ZONE = "Europe/Moscow"
+    TARGET_IMAGE_DIR = "product_images/"
 
 
 class AdminConfig:
