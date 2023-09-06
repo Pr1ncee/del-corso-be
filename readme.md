@@ -1,2 +1,2 @@
-# INFRA-Ansible
-Contains playbooks and roles to configuring server
+# INFRA-Terraform
+Contains terraform configuration files
