@@ -11,6 +11,7 @@ class Product(BaseModel):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
     vendor_code = models.CharField(max_length=100, verbose_name="Артикул")
+    new_collection = models.BooleanField(default=False)
 
     size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Размер")
     color = models.ForeignKey(Color, on_delete=models.CASCADE, verbose_name="Цвет")
@@ -29,6 +30,7 @@ class Product(BaseModel):
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
     image = models.FileField(upload_to=general_config.TARGET_IMAGE_DIR, verbose_name="Изображение")
+    primary = models.BooleanField(default=False, verbose_name="Основная фотография")
 
     def __str__(self):
         return f"{self.product.name} ({self.product.vendor_code}) - {self.product.price}"
