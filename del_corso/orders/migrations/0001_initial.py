@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('comment', models.TextField(blank=True, null=True, verbose_name='Комментарий к заказу')),
                 ('address', models.TextField(verbose_name='Адрес')),
                 ('order_date', models.DateField(verbose_name='Дата заказа')),
-                ('total_amount', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Цена заказа')),
+                ('total_amount', models.DecimalField(decimal_places=2, max_digits=10, blank=True, null=True, verbose_name='Цена заказа')),
             ],
             options={
                 'verbose_name': 'Заказ',

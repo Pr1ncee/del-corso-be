@@ -95,6 +95,9 @@ DATABASES = {
         'PASSWORD': postgres_config.PWD,
         'HOST': postgres_config.HOST,
         'PORT': postgres_config.PORT,
+        'TEST': {
+            'NAME': postgres_config.TEST_NAME,
+        }
     }
 }
 

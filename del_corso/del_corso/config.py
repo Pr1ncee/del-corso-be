@@ -11,6 +11,7 @@ class PostgresConfig:
     USER = os.getenv("POSTGRES_USER", "postgres")
     NAME = os.getenv("POSTGRES_NAME", "del_corso")
     PORT = os.getenv("POSTGRES_PORT", "5432")
+    TEST_NAME = os.getenv("POSTGRES_TEST_DB", "test_del_corso")
 
 
 class GeneralConfig:

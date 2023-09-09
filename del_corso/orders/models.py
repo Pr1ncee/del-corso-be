@@ -1,5 +1,6 @@
 from django.core.validators import EmailValidator
 from django.db import models
+from django.db.models import Sum
 
 from base_models import BaseModel
 from orders.enums.status_enum import OrderStatus
@@ -23,9 +24,14 @@ class Order(BaseModel):
     address = models.TextField(verbose_name="Адрес")
 
     order_date = models.DateField(verbose_name="Дата заказа")
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена заказа")
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name="Цена заказа")
 
     status = models.CharField(max_length=50, choices=OrderStatus.choices, default=OrderStatus.PENDING, verbose_name="Статус")
+
+    def update_total_amount(self):
+        total_amount = OrderItem.objects.filter(order=self).aggregate(Sum('subtotal'))['subtotal__sum']
+        self.total_amount = total_amount
+        self.save()
 
     def __str__(self):
         return f"{self.last_name} {self.first_name} - {self.telephone_number}"
@@ -44,6 +50,12 @@ class OrderItem(BaseModel):
     def __str__(self):
         return (f"{self.order.last_name} {self.order.first_name} {self.order.surname} "
                 f"- {self.order.telephone_number}. {self.product.name} ({self.product.vendor_code}) - {self.quantity}")
+
+    def save(self, *args, **kwargs):
+        self.subtotal = self.quantity * self.product.get_current_price()
+        super().save(*args, **kwargs)
+
+        self.order.update_total_amount()
 
     class Meta:
         verbose_name = "Позиция заказа"
