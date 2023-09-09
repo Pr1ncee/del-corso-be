@@ -1,4 +1,6 @@
+from django.apps import apps
 from django.db import models
+from django.utils import timezone
 
 from base_models import BaseModel
 from store.models.category import SeasonCategory, TypeCategory, Size, Color
@@ -21,6 +23,20 @@ class Product(BaseModel):
     def __str__(self):
         return f"{self.name} ({self.vendor_code}) - {self.price}"
 
+    def get_current_price(self) -> float | models.DecimalField | int:
+        """Get product's current price considering a discount"""
+
+        product_discount_model = apps.get_model('discounts', 'ProductDiscount')
+        active_discount = product_discount_model.objects.filter(
+            product=self,
+            discount__start_date__lte=timezone.now().date(),
+            discount__end_date__gte=timezone.now().date()
+        ).first()
+
+        if active_discount:
+            return active_discount.discount.discount_price
+        return self.price
+
     class Meta:
         app_label = "store"
         verbose_name = "Товар"
@@ -37,5 +53,5 @@ class ProductImage(BaseModel):
 
     class Meta:
         app_label = "store"
-        verbose_name = "Изображение продукта"
-        verbose_name_plural = "Изображения продуктов"
+        verbose_name = "Изображение товара"
+        verbose_name_plural = "Изображения товаров"
