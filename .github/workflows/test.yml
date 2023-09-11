@@ -1,0 +1,17 @@
+# test git-hub action
+
+name: test-github-action
+
+on:
+  push:
+    branches:
+      - master
+
+
+jobs:
+  job-name:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check latest commit
+        run: echo "latest master commit code ${{ github.sha }}"
