@@ -5,8 +5,13 @@ from store.models import Product, ProductImage, SeasonCategory, Size, TypeCatego
 
 class ProductAdmin(admin.ModelAdmin):
     model = Product
-    list_display = ("id", "name", "price", "vendor_code", "size", "color", "season_category", "type_category")
+    list_display = ("id", "name", "price", "vendor_code", "size", "color", "season_categories", "type_category")
     search_fields = ("id", "name", "price", "vendor_code")
+
+    def season_categories(self, obj):
+        return ", ".join([str(category) for category in obj.season_category.all()])
+
+    season_categories.short_description = "Season Categories"
 
 
 class ProductImageAdmin(admin.ModelAdmin):
