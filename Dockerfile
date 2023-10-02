@@ -9,4 +9,4 @@ COPY . /app/
 
 RUN pip3 install pipenv && pipenv install --system --deploy --ignore-pipfile
 
-CMD "/app/entrypoint.sh"
+ENTRYPOINT ["python",  "del_corso/manage.py", "runserver", "0.0.0.0:8000"]
