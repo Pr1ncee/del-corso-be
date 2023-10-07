@@ -83,11 +83,32 @@ class ProductViewSet(mixins.ListModelMixin,
     serializer_class = ProductSerializer
 
     def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        if not pk:
-            return Product.objects.all()
+        queryset = Product.objects.all()
 
-        return Product.objects.filter(pk=pk)
+        min_price = self.request.GET.get('min_price')
+        max_price = self.request.GET.get('max_price')
+        if min_price:
+            queryset = queryset.filter(price__gte=int(min_price))
+        if max_price:
+            queryset = queryset.filter(price__lte=int(max_price))
+
+        size = self.request.GET.get('size')
+        if size:
+            queryset = queryset.filter(size__size=int(size))
+
+        product_type = self.request.GET.get('type')
+        if product_type:
+            queryset = queryset.filter(type_category__name=product_type)
+
+        color = self.request.GET.get('color')
+        if color:
+            queryset = queryset.filter(color__color=color)
+
+        season = self.request.GET.get('season')
+        if season:
+            queryset = queryset.filter(season_category__name=season)
+
+        return queryset
 
     @action(detail=True, methods=["GET"], url_path="type-category")
     def get_products_by_type_category(self, request, pk: int = None):

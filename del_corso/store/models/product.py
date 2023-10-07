@@ -20,7 +20,7 @@ class Product(BaseModel):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
     vendor_code = models.CharField(max_length=100, verbose_name="Артикул")
-    new_collection = models.BooleanField(default=False)
+    new_collection = models.BooleanField(default=False, verbose_name="Новая коллекция")
 
     upper_material = models.CharField(
         max_length=50,
@@ -38,12 +38,14 @@ class Product(BaseModel):
                                     validators=[
                                         MinValueValidator(0,
                                                           message="Высота каблука должна быть положительным значением")
-                                    ])
+                                    ],
+                                    verbose_name="Высота каблука")
     sole_height = models.FloatField(null=True,
                                     validators=[
                                         MinValueValidator(0,
                                                           message="Высота подошвы должна быть положительным значением")
-                                    ])
+                                    ],
+                                    verbose_name="Высота подошвы")
     completeness = models.CharField(
         max_length=50,
         choices=CompletenessType.choices,
