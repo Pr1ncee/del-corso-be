@@ -88,9 +88,9 @@ class ProductViewSet(mixins.ListModelMixin,
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
         if min_price:
-            queryset = queryset.filter(price__gte=int(min_price))
+            queryset = queryset.filter(price__gte=float(min_price))
         if max_price:
-            queryset = queryset.filter(price__lte=int(max_price))
+            queryset = queryset.filter(price__lte=float(max_price))
 
         size = self.request.GET.get('size')
         if size:
