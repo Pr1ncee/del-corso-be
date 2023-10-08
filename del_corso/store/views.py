@@ -1,6 +1,7 @@
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from store.serializers import (
     SizeSerializer,
@@ -81,6 +82,7 @@ class ProductViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet):
     serializer_class = ProductSerializer
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         queryset = Product.objects.all()
