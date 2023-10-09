@@ -63,7 +63,7 @@ class ProductSerializer(serializers.ModelSerializer):
                 'end_date': active_discount.discount.end_date,
             }
 
-        return None
+        return {}
 
     class Meta:
         model = Product
