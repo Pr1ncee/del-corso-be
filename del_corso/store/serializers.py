@@ -38,10 +38,13 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     size = SizeSerializer()
     color = ColorSerializer()
-    season_category = SeasonCategorySerializer()
+    season_categories = serializers.SerializerMethodField()
     type_category = TypeCategorySerializer()
     image_paths = serializers.SerializerMethodField()
     discount = serializers.SerializerMethodField()
+
+    def get_season_categories(self, obj):
+        return [season.name for season in obj.season_category.all()]
 
     def get_image_paths(self, obj):
         product_images = obj.productimage_set.all()

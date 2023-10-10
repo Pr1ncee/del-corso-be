@@ -124,7 +124,7 @@ class ProductViewSet(mixins.ListModelMixin,
                 season_filters |= Q(season_category__name=season)
             queryset = queryset.filter(season_filters)
 
-        return queryset
+        return queryset.distinct()
 
     @action(detail=True, methods=["GET"], url_path="type-category")
     def get_products_by_type_category(self, request, pk: int = None):

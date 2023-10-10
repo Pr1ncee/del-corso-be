@@ -11,7 +11,7 @@ class ProductAdmin(admin.ModelAdmin):
     def season_categories(self, obj):
         return ", ".join([str(category) for category in obj.season_category.all()])
 
-    season_categories.short_description = "Season Categories"
+    season_categories.short_description = "Сезон"
 
 
 class ProductImageAdmin(admin.ModelAdmin):
