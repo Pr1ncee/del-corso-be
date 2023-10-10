@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -89,26 +90,39 @@ class ProductViewSet(mixins.ListModelMixin,
 
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
+
         if min_price:
             queryset = queryset.filter(price__gte=float(min_price))
         if max_price:
             queryset = queryset.filter(price__lte=float(max_price))
 
-        size = self.request.GET.get('size')
-        if size:
-            queryset = queryset.filter(size__size=int(size))
+        sizes = self.request.GET.getlist('size')
+        if sizes:
+            size_filters = Q()
+            for size in sizes:
+                size_filters |= Q(size__size=int(size))
+            queryset = queryset.filter(size_filters)
 
-        product_type = self.request.GET.get('type')
-        if product_type:
-            queryset = queryset.filter(type_category__name=product_type)
+        product_types = self.request.GET.getlist('type')
+        if product_types:
+            type_filters = Q()
+            for product_type in product_types:
+                type_filters |= Q(type_category__name=product_type)
+            queryset = queryset.filter(type_filters)
 
-        color = self.request.GET.get('color')
-        if color:
-            queryset = queryset.filter(color__color=color)
+        colors = self.request.GET.getlist('color')
+        if colors:
+            color_filters = Q()
+            for color in colors:
+                color_filters |= Q(color__color=color)
+            queryset = queryset.filter(color_filters)
 
-        season = self.request.GET.get('season')
-        if season:
-            queryset = queryset.filter(season_category__name=season)
+        seasons = self.request.GET.getlist('season')
+        if seasons:
+            season_filters = Q()
+            for season in seasons:
+                season_filters |= Q(season_category__name=season)
+            queryset = queryset.filter(season_filters)
 
         return queryset
 
