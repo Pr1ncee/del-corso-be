@@ -9,14 +9,15 @@ from store.serializers import (
     ColorSerializer,
     TypeCategorySerializer,
     SeasonCategorySerializer,
-    ProductSerializer
+    ProductSizeSerializer,
 )
 from store.models import (
     Size,
     Color,
     TypeCategory,
     SeasonCategory,
-    Product
+    Product,
+    ProductSize,
 )
 
 
@@ -82,46 +83,46 @@ class SeasonCategoryViewSet(mixins.ListModelMixin,
 class ProductViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet):
-    serializer_class = ProductSerializer
+    serializer_class = ProductSizeSerializer
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        queryset = Product.objects.all()
+        queryset = ProductSize.objects.all()
 
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
 
         if min_price:
-            queryset = queryset.filter(price__gte=float(min_price))
+            queryset = queryset.filter(product__price__gte=float(min_price))
         if max_price:
-            queryset = queryset.filter(price__lte=float(max_price))
+            queryset = queryset.filter(product__price__lte=float(max_price))
 
         sizes = self.request.GET.getlist('size')
         if sizes:
             size_filters = Q()
             for size in sizes:
-                size_filters |= Q(size__size=int(size))
+                size_filters |= Q(sizes__size=int(size))
             queryset = queryset.filter(size_filters)
 
         product_types = self.request.GET.getlist('type')
         if product_types:
             type_filters = Q()
             for product_type in product_types:
-                type_filters |= Q(type_category__name=product_type)
+                type_filters |= Q(product__type_category__name=product_type)
             queryset = queryset.filter(type_filters)
 
         colors = self.request.GET.getlist('color')
         if colors:
             color_filters = Q()
             for color in colors:
-                color_filters |= Q(color__color=color)
+                color_filters |= Q(product__color__color=color)
             queryset = queryset.filter(color_filters)
 
         seasons = self.request.GET.getlist('season')
         if seasons:
             season_filters = Q()
             for season in seasons:
-                season_filters |= Q(season_category__name=season)
+                season_filters |= Q(product__season_category__name=season)
             queryset = queryset.filter(season_filters)
 
         return queryset.distinct()

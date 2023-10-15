@@ -2,6 +2,7 @@ from django.apps import apps
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
+from django.core.validators import FileExtensionValidator
 
 from base_models import BaseModel
 from store.models.category import SeasonCategory, TypeCategory, Size, Color
@@ -62,7 +63,6 @@ class Product(BaseModel):
     guarantee_period = models.PositiveSmallIntegerField(verbose_name="Гарантийный срок", null=True)
     importer = models.CharField(max_length=200, verbose_name="Импортер", null=True)
 
-    size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Размер")
     color = models.ForeignKey(Color, on_delete=models.CASCADE, verbose_name="Цвет")
     season_category = models.ManyToManyField(SeasonCategory, verbose_name="Сезон")
     type_category = models.ForeignKey(TypeCategory, on_delete=models.CASCADE, verbose_name="Категория")
@@ -90,9 +90,26 @@ class Product(BaseModel):
         verbose_name_plural = "Товары"
 
 
+class ProductSize(BaseModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
+    sizes = models.ManyToManyField(Size, verbose_name="Размеры в наличии")
+
+    def __str__(self):
+        return f"{self.product.name} ({self.product.vendor_code}) - {self.product.price}"
+
+    class Meta:
+        app_label = "store"
+        verbose_name = "Размер товара"
+        verbose_name_plural = "Размеры товаров"
+
+
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
-    image = models.FileField(upload_to=general_config.TARGET_IMAGE_DIR, verbose_name="Изображение")
+    image = models.FileField(
+        upload_to=general_config.TARGET_IMAGE_DIR,
+        verbose_name="Изображение",
+        validators=[FileExtensionValidator(allowed_extensions=("png", "jpg"))],
+    )
     primary = models.BooleanField(default=False, verbose_name="Основная фотография")
 
     def __str__(self):

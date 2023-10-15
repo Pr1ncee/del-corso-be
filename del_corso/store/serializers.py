@@ -2,7 +2,7 @@ from django.apps import apps
 from django.utils import timezone
 from rest_framework import serializers
 
-from store.models import Size, Color, TypeCategory, SeasonCategory, Product, ProductImage
+from store.models import Size, Color, TypeCategory, SeasonCategory, Product, ProductImage, ProductSize
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -36,7 +36,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    size = SizeSerializer()
     color = ColorSerializer()
     season_categories = serializers.SerializerMethodField()
     type_category = TypeCategorySerializer()
@@ -48,7 +47,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_image_paths(self, obj):
         product_images = obj.productimage_set.all()
-        image_paths = [image.image.path for image in product_images]
+        image_paths = [image.image.path.split("/")[-1] for image in product_images]
         return image_paths
 
     def get_discount(self, obj):
@@ -71,3 +70,16 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         exclude = ("created_at", "updated_at")
+
+
+class ProductSizeSerializer(serializers.ModelSerializer):
+    sizes = serializers.SerializerMethodField()
+    product = ProductSerializer()
+
+    def get_sizes(self, obj):
+        sizes = obj.sizes.all().values_list("size", flat=True)
+        return sizes
+
+    class Meta:
+        model = ProductSize
+        fields = '__all__'

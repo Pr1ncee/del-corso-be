@@ -24,7 +24,11 @@ docker-logs:
 
 .PHONY: docker-connect
 docker-connect:
-	docker compose -f $(COMPOSE_FILE) exec -it web-ui /bin/bash
+	docker compose exec -it $(DEL_CORSO_SERVICE) /bin/bash
+
+.PHONY: makemigrations
+makemigrations:
+	docker compose exec $(DEL_CORSO_SERVICE) python ./del_corso/manage.py makemigrations
 
 .PHONY: migrate
 migrate:
