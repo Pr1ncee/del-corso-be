@@ -50,4 +50,4 @@ docker-build-nginx:
 	docker build \
 		--tag=nginx-del-corso \
 		--file=build/docker/nginx/Dockerfile-nginx \
-		nginx/
+		./
