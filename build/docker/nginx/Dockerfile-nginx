@@ -1,0 +1,3 @@
+FROM nginx:1.25-alpine
+
+COPY ./product_images /usr/share/nginx/html

@@ -2,27 +2,34 @@ version: '3.8'
 
 services:
   del_corso:
-    build: .
+    image: del-corso:latest
     ports:
       - "8000:8000"
     links:
       - "postgres:db"
     env_file:
-      - .env
+      - ../../.env
     depends_on:
       - postgres
     volumes:
-      - ./:/app/
+      - ../../:/app/
 
   postgres:
     image: postgres:14.1-alpine
     restart: always
     env_file:
-      - .env
+      - ../../.env
     ports:
       - '5432:5432'
     volumes:
       - postgres:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx-del-corso
+    ports:
+      - "80:80"
+    depends_on:
+      - del_corso
 
 volumes:
   postgres:
