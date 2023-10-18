@@ -16,7 +16,6 @@ from store.models import (
     Color,
     TypeCategory,
     SeasonCategory,
-    Product,
     ProductSize,
 )
 
@@ -130,12 +129,27 @@ class ProductViewSet(mixins.ListModelMixin,
     @action(detail=True, methods=["GET"], url_path="type-category")
     def get_products_by_type_category(self, request, pk: int = None):
         type_category = self.get_object()
-        products = Product.objects.filter(type_category__id=type_category.id)
+        products = ProductSize.objects.filter(product__type_category__id=type_category.id)
         serializer = self.get_serializer(products, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=["GET"], url_path="new-collection")
     def get_new_collection_products(self, request):
-        new_collection_products = Product.objects.filter(new_collection=True)
+        product_type = request.GET.get('type')
+        if product_type:
+            new_collection_products = ProductSize.objects.filter(Q(product__new_collection=True)
+                                                                 & Q(product__type_category__name=product_type))
+        else:
+            new_collection_products = ProductSize.objects.filter(product__new_collection=True)
+
         serializer = self.get_serializer(new_collection_products, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["GET"], url_path="get-products")
+    def bulk_retrieve_products(self, request):
+        raw_product_size_ids = request.GET.getlist('products')
+        product_size_ids = [int(_id) for _id in raw_product_size_ids[0].split(',')]
+
+        products = ProductSize.objects.filter(product__id__in=product_size_ids)
+        serializer = self.get_serializer(products, many=True)
         return Response(serializer.data)

@@ -13,7 +13,12 @@ class DiscountViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
+        product_type = self.request.GET.get('type')
+
         if not pk:
-            return ProductDiscount.objects.all()
+            if product_type:
+                return ProductDiscount.objects.filter(product__type_category__name=product_type)
+            else:
+                return ProductDiscount.objects.all()
 
         return ProductDiscount.objects.filter(pk=pk)
