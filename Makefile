@@ -7,7 +7,7 @@ DOTENV_BASE_FILE ?= .env
 
 
 .PHONY: docker-build-all
-docker-build-all: docker-build-nginx docker-build-del-corso
+docker-build-all: docker-build-del-corso
 
 .PHONY: docker-up
 docker-up:
@@ -47,11 +47,3 @@ docker-build-del-corso:
 	docker build \
 		--tag=del-corso \
 		--file=build/docker/del-corso/Dockerfile-del-corso \
-		./
-
-.PHONY: docker-build-nginx
-docker-build-nginx:
-	docker build \
-		--tag=nginx-del-corso \
-		--file=build/docker/nginx/Dockerfile-nginx \
-		./
