@@ -46,6 +46,7 @@ class OrderItem(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
     quantity = models.PositiveIntegerField(verbose_name="Количество")
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Итоговая сумма")
+    size = models.IntegerField(verbose_name="Размер", null=True)
 
     def __str__(self):
         return (f"{self.order.last_name} {self.order.first_name} {self.order.surname} "

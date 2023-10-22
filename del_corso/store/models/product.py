@@ -62,6 +62,8 @@ class Product(BaseModel):
     country_of_origin = models.CharField(max_length=50, verbose_name="Страна производства", null=True)
     guarantee_period = models.PositiveSmallIntegerField(verbose_name="Гарантийный срок", null=True)
     importer = models.CharField(max_length=200, verbose_name="Импортер", null=True)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Размер", null=True)
+    in_stock = models.BooleanField(default=True, verbose_name="В наличии")
 
     color = models.ForeignKey(Color, on_delete=models.CASCADE, verbose_name="Цвет")
     season_category = models.ManyToManyField(SeasonCategory, verbose_name="Сезон")
@@ -69,6 +71,15 @@ class Product(BaseModel):
 
     def __str__(self):
         return f"{self.name} ({self.vendor_code}) - {self.price}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        product_size, created = ProductSize.objects.get_or_create(product=self)
+        product_size.sizes.add(self.size.id)
+
+        if not self.in_stock:
+            product_size.sizes.remove(self.size)
 
     def get_current_price(self) -> float | models.DecimalField | int:
         """Get product's current price considering a discount"""

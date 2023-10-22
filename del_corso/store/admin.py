@@ -6,7 +6,7 @@ from store.models.product import ProductSize
 
 class ProductAdmin(admin.ModelAdmin):
     model = Product
-    list_display = ("id", "name", "price", "vendor_code", "color", "season_categories", "type_category")
+    list_display = ("id", "name", "price", "vendor_code", "color", "season_categories", "type_category", "in_stock")
     search_fields = ("id", "name", "price", "vendor_code")
 
     def season_categories(self, obj):
