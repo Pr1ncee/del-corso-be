@@ -47,3 +47,4 @@ docker-build-del-corso:
 	docker build \
 		--tag=del-corso \
 		--file=build/docker/del-corso/Dockerfile-del-corso \
+		./
