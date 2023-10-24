@@ -5,6 +5,7 @@ from orders.enums.status_enum import OrderStatus
 from orders.models import Order, OrderItem
 
 
+@admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     model = Order
     list_display = ("id", "first_name", "last_name", "surname", "country",
@@ -39,6 +40,7 @@ class OrderAdmin(admin.ModelAdmin):
     truncated_address.short_description = "Address"
 
 
+@admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     model = OrderItem
     list_display = ("id", "order", "product", "quantity", "subtotal", "is_product_in_stock")
@@ -51,8 +53,3 @@ class OrderItemAdmin(admin.ModelAdmin):
         return obj.product.in_stock
 
     is_product_in_stock.short_description = "В наличии"
-
-
-admin.site.register(Order, OrderAdmin)
-admin.site.register(OrderItem, OrderItemAdmin)
-

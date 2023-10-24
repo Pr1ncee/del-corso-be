@@ -1,6 +1,6 @@
 from django import forms
 
-from store.models import Product, Size
+from store.models import Product, Size, Color
 
 
 class BulkUpdateProductSizeForm(forms.Form):
@@ -9,3 +9,11 @@ class BulkUpdateProductSizeForm(forms.Form):
         empty_label="Выберите товар",
     )
     sizes = forms.ModelMultipleChoiceField(queryset=Size.objects.all(), widget=forms.CheckboxSelectMultiple)
+
+
+class BulkUpdateProductColorForm(forms.Form):
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.order_by("-created_at"),
+        empty_label="Выберите товар",
+    )
+    colors = forms.ModelMultipleChoiceField(queryset=Color.objects.all(), widget=forms.CheckboxSelectMultiple)

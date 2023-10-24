@@ -5,14 +5,25 @@ from django.shortcuts import render
 from django.urls import path, reverse
 from django.utils.html import format_html
 
-from store.forms import BulkUpdateProductSizeForm
+from store.forms import BulkUpdateProductSizeForm, BulkUpdateProductColorForm
 from store.models import Product, ProductImage, SeasonCategory, Size, TypeCategory, Color
 from store.models.product import ProductSize
 
 
+@admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     model = Product
-    list_display = ("id", "name", "price", "vendor_code", "color", "season_categories", "type_category", "in_stock", "size")
+    list_display = (
+        "id",
+        "name",
+        "price",
+        "vendor_code",
+        "color",
+        "season_categories",
+        "type_category",
+        "in_stock",
+        "size"
+    )
     search_fields = ("id", "name", "price", "vendor_code")
     actions = ["set_in_stock", "set_out_of_stock"]
 
@@ -33,7 +44,10 @@ class ProductAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = super().get_urls()
-        new_urls = [path('bulk-update-product-size/', self.bulk_update_product_size)]
+        new_urls = [
+            path('bulk-update-product-size/', self.bulk_update_product_size),
+            path('bulk-update-product-color/', self.bulk_update_product_color),
+        ]
         return new_urls + urls
 
     def bulk_update_product_size(self, request):
@@ -62,7 +76,7 @@ class ProductAdmin(admin.ModelAdmin):
                     new_product.save()
                     new_product.season_category.set(season)
 
-            messages.success(request, "Размер(ы) успешно добавлены к товару!")
+            messages.success(request, "Размеры успешно добавлены к товару!")
             url = reverse('admin:store_product_changelist')
             return HttpResponseRedirect(url)
 
@@ -70,12 +84,28 @@ class ProductAdmin(admin.ModelAdmin):
         data = {"form": form}
         return render(request, "admin/store/product/bulk-update-product-size.html", data)
 
+    def bulk_update_product_color(self, request):
+        if request.method == "POST":
+            form = BulkUpdateProductColorForm(request.POST)
+            if form.is_valid():
+                pass
 
+            messages.success(request, "Цвета успешно добавлены к товару!")
+            url = reverse('admin:store_product_changelist')
+            return HttpResponseRedirect(url)
+
+        form = BulkUpdateProductColorForm()
+        data = {"form": form}
+        return render(request, "admin/store/product/bulk-update-product-color.html", data)
+
+
+@admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
     model = ProductImage
     list_display = ("id", "product")
 
 
+@admin.register(ProductSize)
 class ProductSizeAdmin(admin.ModelAdmin):
     model = ProductSize
     list_display = ("product", "product_in_stock")
@@ -87,30 +117,25 @@ class ProductSizeAdmin(admin.ModelAdmin):
     product_in_stock.short_description = "Размеры в наличии"
 
 
+@admin.register(SeasonCategory)
 class SeasonCategoryAdmin(admin.ModelAdmin):
     model = SeasonCategory
 
 
+@admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
     model = Size
 
 
+@admin.register(TypeCategory)
 class TypeCategoryAdmin(admin.ModelAdmin):
     model = TypeCategory
     list_display = ("id", "name", "is_popular")
     search_fields = ("id", "name")
 
 
+@admin.register(Color)
 class ColorAdmin(admin.ModelAdmin):
     model = Color
     list_display = ("id", "color")
     search_fields = ("id", "color")
-
-
-admin.site.register(Product, ProductAdmin)
-admin.site.register(ProductImage, ProductImageAdmin)
-admin.site.register(ProductSize, ProductSizeAdmin)
-admin.site.register(SeasonCategory, SeasonCategoryAdmin)
-admin.site.register(Size, SizeAdmin)
-admin.site.register(TypeCategory, TypeCategoryAdmin)
-admin.site.register(Color, ColorAdmin)

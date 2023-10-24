@@ -48,7 +48,7 @@ class Size(BaseModel):
 
 
 class Color(BaseModel):
-    color = models.CharField(max_length=20, verbose_name="Цвет")
+    color = models.CharField(max_length=20, verbose_name="Цвет", unique=True, null=False)
 
     def __str__(self):
         return self.color

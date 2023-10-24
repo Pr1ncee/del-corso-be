@@ -75,12 +75,16 @@ class Product(BaseModel):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.size:
-            product_size, created = ProductSize.objects.get_or_create(product__vendor_code=self.vendor_code)
+            product_size, created = ProductSize.objects.get_or_create(
+                product__vendor_code=self.vendor_code,
+                defaults={'product': self},
+            )
             product_size.sizes.add(self.size.id)
 
             # TODO If an object already has size and a user just changes `in_stock` field, update ProductSize as well
             if not self.in_stock:
                 product_size.sizes.remove(self.size)
+            product_size.save()
 
     def get_current_price(self) -> float | models.DecimalField | int:
         """Get product's current price considering a discount"""
@@ -103,6 +107,7 @@ class Product(BaseModel):
 
 
 class ProductSize(BaseModel):
+    # TODO DO NOTHING
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
     sizes = models.ManyToManyField(Size, verbose_name="Размеры в наличии")
 
