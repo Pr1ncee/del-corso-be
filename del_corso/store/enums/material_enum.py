@@ -1,18 +1,18 @@
-from django.db import models
+from store.enums.base_enum import BaseEnum
 
 
-class UpperMaterialType(models.TextChoices):
+class UpperMaterialType(BaseEnum):
     GENUINE_LEATHER = "Genuine leather", "Натуральная кожа"
 
 
-class LiningMaterialType(models.TextChoices):
+class LiningMaterialType(BaseEnum):
     NATURAL_FUR = "Natural fur", "Натуральный мех"
     BAIZE = "Baize", "Байка"
 
 
-class CompletenessType(models.TextChoices):
+class CompletenessType(BaseEnum):
     AVERAGE = "Average", "Средняя"
 
 
-class TrueToSizeType(models.TextChoices):
+class TrueToSizeType(BaseEnum):
     EXACT_SIZE = "Exact size", "Размер в размер"

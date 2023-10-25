@@ -2,7 +2,21 @@ from django.apps import apps
 from django.utils import timezone
 from rest_framework import serializers
 
-from store.models import Size, Color, TypeCategory, SeasonCategory, Product, ProductImage, ProductSize
+from store.enums.material_enum import (
+    TrueToSizeType,
+    UpperMaterialType,
+    LiningMaterialType,
+    CompletenessType
+)
+from store.models import (
+    Size,
+    Color,
+    TypeCategory,
+    SeasonCategory,
+    Product,
+    ProductImage,
+    ProductSize
+)
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -41,6 +55,22 @@ class ProductSerializer(serializers.ModelSerializer):
     type_category = TypeCategorySerializer()
     image_paths = serializers.SerializerMethodField()
     discount = serializers.SerializerMethodField()
+    true_to_size = serializers.SerializerMethodField()
+    completeness = serializers.SerializerMethodField()
+    upper_material = serializers.SerializerMethodField()
+    lining_material = serializers.SerializerMethodField()
+
+    def get_completeness(self, obj):
+        return CompletenessType.get_description(obj.completeness)
+
+    def get_lining_material(self, obj):
+        return LiningMaterialType.get_description(obj.lining_material)
+
+    def get_upper_material(self, obj):
+        return UpperMaterialType.get_description(obj.upper_material)
+
+    def get_true_to_size(self, obj):
+        return TrueToSizeType.get_description(obj.true_to_size)
 
     def get_season_categories(self, obj):
         return [season.name for season in obj.season_category.all()]
