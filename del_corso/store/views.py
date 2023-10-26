@@ -9,7 +9,7 @@ from store.serializers import (
     ColorSerializer,
     TypeCategorySerializer,
     SeasonCategorySerializer,
-    ProductSizeSerializer, ProductSerializer,
+    ProductSizeSerializer, ProductDetailedSerializer,
 )
 from store.models import (
     Size,
@@ -151,5 +151,5 @@ class ProductViewSet(mixins.ListModelMixin,
         product_size_ids = [int(_id) for _id in raw_product_size_ids[0].split(',')]
 
         products = Product.objects.filter(id__in=product_size_ids)
-        serializer = ProductSerializer(products, many=True)
+        serializer = ProductDetailedSerializer(products, many=True)
         return Response(serializer.data)
