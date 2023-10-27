@@ -1,18 +1,28 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
 
 from base_models import BaseModel
 from store.models.product import Product
 
 
 class Discount(BaseModel):
-    name = models.CharField(max_length=100, verbose_name="Название")
-    description = models.TextField(blank=True, null=True, verbose_name="Описание")
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Название",
+        help_text="Название представляет собой артикул товара, на который Вы хотите создать скидку"
+    )
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена со скидкой")
     start_date = models.DateField(verbose_name="Дата начала акции")
     end_date = models.DateField(verbose_name="Дата конца акции")
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        product = get_object_or_404(Product, vendor_code=self.name)
+        ProductDiscount.objects.create(product=product, discount=self)
 
     class Meta:
         verbose_name = "Скидка"

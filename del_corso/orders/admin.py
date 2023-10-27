@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from orders.enums.status_enum import OrderStatus
+from orders.forms import OrderStatusForm
 from orders.models import Order, OrderItem
 
 
@@ -12,6 +13,9 @@ class OrderAdmin(admin.ModelAdmin):
                     "telephone_number", "email", "truncated_address", "order_date", "colored_status")
     search_fields = ("id", "first_name", "last_name", "surname", "country",
                      "telephone_number", "email", "address", "order_date", "status")
+    list_filter = ("status", )
+    action_form = OrderStatusForm
+    actions = ("change_status", )
 
     def colored_status(self, obj):
         status_russian = obj.get_status_display()
@@ -28,7 +32,6 @@ class OrderAdmin(admin.ModelAdmin):
         color = status_colors.get(status, 'white')
 
         return format_html(f'<span style="color: {color};">{status_russian}</span>')
-
     colored_status.short_description = "Статус"
 
     def truncated_address(self, obj):
@@ -36,8 +39,12 @@ class OrderAdmin(admin.ModelAdmin):
         if len(obj.address) > max_length:
             return obj.address[:max_length] + "..."
         return obj.address
+    truncated_address.short_description = "Адрес"
 
-    truncated_address.short_description = "Address"
+    @admin.action(description="Изменить статус заказа")
+    def change_status(self, request, queryset):
+        desired_status = OrderStatus[request.POST["status"].upper()]
+        queryset.update(status=desired_status)
 
 
 @admin.register(OrderItem)
