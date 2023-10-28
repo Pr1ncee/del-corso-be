@@ -25,12 +25,13 @@ class Discount(BaseModel):
         return self.name
 
     def save(self, *args, **kwargs):
+        is_new = self.pk
         super().save(*args, **kwargs)
 
         logger.info(
-            f"Discount object {self.name}. Discount price - {self.discount_price}"
+            f"Discount object {self.name} updated. Discount price - {self.discount_price}"
         )
-        if not self.pk:
+        if not is_new:
             logger.info("Creating ProductDiscount object...")
             product = get_object_or_404(Product, vendor_code=self.name)
             product_discount = ProductDiscount.objects.create(product=product, discount=self)
