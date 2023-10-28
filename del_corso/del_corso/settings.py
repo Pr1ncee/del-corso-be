@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from del_corso.config import postgres_config, general_config
+from del_corso.config import postgres_config, general_config, email_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -181,3 +181,11 @@ JAZZMIN_SETTINGS = {
     # Hide these models when generating side menu (e.g auth.user)
     "hide_models": [],
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = email_config.EMAIL_HOST
+EMAIL_PORT = email_config.EMAIL_PORT
+EMAIL_USE_TLS = email_config.EMAIL_USE_TLS
+EMAIL_HOST_USER = email_config.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = email_config.EMAIL_HOST_PASSWORD

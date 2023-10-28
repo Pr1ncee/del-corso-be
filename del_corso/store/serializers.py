@@ -106,7 +106,7 @@ class ProductSerializer(BaseProductSerialzer):
 
 class ProductSizeSerializer(serializers.ModelSerializer):
     sizes = serializers.SerializerMethodField()
-    product = ProductSerializer()
+    products = ProductSerializer(many=True)
 
     def get_sizes(self, obj):
         sizes = obj.sizes.all().values_list("size", flat=True)
@@ -121,7 +121,7 @@ class ProductDetailedSerializer(BaseProductSerialzer):
     sizes = serializers.SerializerMethodField()
 
     def get_sizes(self, obj):
-        raw_sizes = ProductSize.objects.get(product__name=obj.name)
+        raw_sizes = ProductSize.objects.get(vendor_code=obj.vendor_code)
         return raw_sizes.sizes.all().values_list("size", flat=True)
 
     class Meta:

@@ -79,7 +79,7 @@ class Product(BaseModel):
     type_category = models.ForeignKey(TypeCategory, on_delete=models.CASCADE, verbose_name="Категория")
 
     def __str__(self):
-        return f"{self.vendor_code} - {self.price}"
+        return f"{self.vendor_code} - {self.price} ({self.size})"
 
     def save(self, *args, **kwargs):
         curr_quantity = self.quantity < 1
@@ -91,6 +91,7 @@ class Product(BaseModel):
             vendor_code=self.vendor_code,
             defaults={'vendor_code': self.vendor_code},
         )
+        product_size.products.add(self)
 
         if self.size and (self.in_stock or not curr_quantity):
             product_size.sizes.add(self.size.id)
@@ -129,6 +130,7 @@ class Product(BaseModel):
 
 class ProductSize(BaseModel):
     vendor_code = models.CharField(max_length=100, verbose_name="Артикул", default="-")
+    products = models.ManyToManyField(Product, verbose_name="Товары", null=True, blank=True)
     sizes = models.ManyToManyField(Size, verbose_name="Размеры в наличии")
 
     def __str__(self):
