@@ -32,8 +32,8 @@ class TypeCategory(BaseModel):
 class Size(BaseModel):
     size = models.IntegerField(
         validators=[
-            MinValueValidator(36, message="Допустимый размер: 36-40."),
-            MaxValueValidator(40, message="Допустимый размер: 36-40."),
+            MinValueValidator(35, message="Допустимый размер: 35-41."),
+            MaxValueValidator(41, message="Допустимый размер: 35-41."),
         ],
         verbose_name="Размер"
     )

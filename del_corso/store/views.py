@@ -92,9 +92,9 @@ class ProductViewSet(mixins.ListModelMixin,
         max_price = self.request.GET.get('max_price')
 
         if min_price:
-            queryset = queryset.filter(product__price__gte=float(min_price))
+            queryset = queryset.filter(products__price__gte=float(min_price))
         if max_price:
-            queryset = queryset.filter(product__price__lte=float(max_price))
+            queryset = queryset.filter(products__price__lte=float(max_price))
 
         sizes = self.request.GET.getlist('size')
         if sizes:
@@ -107,29 +107,29 @@ class ProductViewSet(mixins.ListModelMixin,
         if product_types:
             type_filters = Q()
             for product_type in product_types:
-                type_filters |= Q(product__type_category__name=product_type)
+                type_filters |= Q(products__type_category__name=product_type)
             queryset = queryset.filter(type_filters)
 
         colors = self.request.GET.getlist('color')
         if colors:
             color_filters = Q()
             for color in colors:
-                color_filters |= Q(product__color__color=color)
+                color_filters |= Q(products__color__color=color)
             queryset = queryset.filter(color_filters)
 
         seasons = self.request.GET.getlist('season')
         if seasons:
             season_filters = Q()
             for season in seasons:
-                season_filters |= Q(product__season_category__name=season)
+                season_filters |= Q(products__season_category__name=season)
             queryset = queryset.filter(season_filters)
 
+        queryset = queryset.filter(products__in_stock=True)
         return queryset.distinct()
 
     @action(detail=True, methods=["GET"], url_path="type-category")
-    def get_products_by_type_category(self, request, pk: int = None):
-        type_category = self.get_object()
-        products = ProductSize.objects.filter(product__type_category__id=type_category.id)
+    def get_products_by_type_category(self, request, pk: int = None | int):
+        products = ProductSize.objects.filter(products__type_category__id=pk).distinct()
         serializer = self.get_serializer(products, many=True)
         return Response(serializer.data)
 
@@ -137,10 +137,10 @@ class ProductViewSet(mixins.ListModelMixin,
     def get_new_collection_products(self, request):
         product_type = request.GET.get('type')
         if product_type:
-            new_collection_products = ProductSize.objects.filter(Q(product__new_collection=True)
-                                                                 & Q(product__type_category__name=product_type))
+            new_collection_products = ProductSize.objects.filter(Q(products__new_collection=True)
+                                                                 & Q(products__type_category__name=product_type))
         else:
-            new_collection_products = ProductSize.objects.filter(product__new_collection=True)
+            new_collection_products = ProductSize.objects.filter(products__new_collection=True)
 
         serializer = self.get_serializer(new_collection_products, many=True)
         return Response(serializer.data)

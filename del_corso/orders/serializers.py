@@ -3,9 +3,11 @@ import logging
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
+from del_corso import setup_logging
 from orders.models import Order, OrderItem
 from store.models import Product
 
+setup_logging()
 logger = logging.getLogger(__name__)
 
 
@@ -25,10 +27,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         product_quantities = validated_data.pop("product_quantities", [])
+        logger.info(f"Received new order request with products: {product_quantities}")
         orders_objects = []
 
         order = Order.objects.create(**validated_data)
-        logger.info(f"Заказ с ID {order.id} успешно создан")
+        logger.info(f"Order {order.id} created successfully!")
 
         for product in product_quantities:
             product_id = product.get("product_id")
@@ -46,9 +49,10 @@ class OrderSerializer(serializers.ModelSerializer):
                         size=size,
                     ))
                 except ObjectDoesNotExist:
-                    logger.warning(f"Товара с ID {product_id} не существует")
+                    logger.warning(f"Product with {product_id} ID doesn't exist")
 
         OrderItem.objects.bulk_create(orders_objects)
+        logger.info(f"New Order ({order.id}) object and its OrderItem objects created successfully.")
 
         order.update_total_amount()
         return order

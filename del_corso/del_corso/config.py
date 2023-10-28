@@ -16,6 +16,7 @@ class PostgresConfig:
 
 class GeneralConfig:
     SECRET_KEY = os.getenv("SECRET_KEY", "")
+    DOMAIN_NAME = os.getenv("DOMAIN_NAME")
     DEBUG = True
     LANGUAGE_CODE = "ru"
     TIME_ZONE = "Europe/Moscow"
@@ -28,6 +29,16 @@ class AdminConfig:
     PWD = os.getenv("ADMIN_PWD", "admin")
 
 
+class EmailConfig:
+    EMAIL_HOST = os.getenv("EMAIL_HOST")
+    EMAIL_PORT = os.getenv("EMAIL_PORT")
+    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+    EMAIL_RECIPIENT_HOST = os.getenv("EMAIL_RECIPIENT_HOST")
+
+
 general_config = GeneralConfig()
 postgres_config = PostgresConfig()
 admin_config = AdminConfig()
+email_config = EmailConfig()

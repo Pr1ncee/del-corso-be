@@ -14,16 +14,33 @@
         <form action="." method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-row">
-                <h4 for="id_product">Выберите товар:</h4>
+                <h5 for="id_product">Выберите товар:</h5>
                 <div style="margin-left: 10px; margin-top: 5px;">
                     {{ form.product }}
                 </div>
             </div>
-            <div class="form-row">
-                <h4 for="id_sizes">Выберите размер(ы):</h4>
+            <div class="form-row" style="margin-top: 20px">
+                <h5 for="id_sizes">Выберите размер(ы):</h5>
             </div>
             <div class="form-row">
                 {{ form.sizes }}
+            </div>
+            <div class="form-row" style="margin-top: 20px">
+                <h5 for="id_quantities">Укажите количество для каждого размера:</h5>
+            </div>
+            <div class="form-row">
+                {% for size in form.sizes %}
+                    <label for="id_quantity_{{ size.choice_label }}" style="margin-top: 5px">{{ size.choice_label }}:</label>
+                    <input type="number" id="id_quantity_{{ size.choice_label }}" name="quantity_{{ size.choice_label }}" min="0" style="
+                        width: 50px;
+                        margin-left: 6px;
+                        margin-right: 30px;
+                        padding: 5px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        font-size: 16px;
+                    ">
+                {% endfor %}
             </div>
             <button class="btn" type="submit" style="
                     background: #007BFF;
@@ -32,7 +49,7 @@
                     padding: 10px 20px;
                     border-radius: 5px;
                     cursor: pointer;
-                    margin-top: 10px;
+                    margin-top: 30px;
             ">Добавить размер(ы)</button>
         </form>
     </div>
