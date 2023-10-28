@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from smtplib import SMTPException
 from sys import exc_info
@@ -5,7 +6,11 @@ from sys import exc_info
 import pytz
 from django.core.mail import send_mail
 
+from del_corso import setup_logging
 from del_corso.config import general_config, email_config
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 
 def send_new_order_notification_email(new_order_id: int) -> None:
@@ -17,6 +22,7 @@ def send_new_order_notification_email(new_order_id: int) -> None:
     """
 
     try:
+        logger.info(f"New Order ({new_order_id}) created. Sending email notification...")
         send_mail(
             subject=subject,
             message=message,
@@ -24,5 +30,6 @@ def send_new_order_notification_email(new_order_id: int) -> None:
             recipient_list=[email_config.EMAIL_RECIPIENT_HOST],
             fail_silently=False,
         )
+        logger.info("Email notification was sent successfully!")
     except SMTPException:
-        print(str(exc_info()[1]))
+        logger.info(f"Failed to send the email notification. The following error occurred: {str(exc_info()[1])}")

@@ -1,4 +1,3 @@
-from django.core.mail import send_mail
 from django.db.models import Q
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action

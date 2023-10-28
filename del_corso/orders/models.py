@@ -1,11 +1,17 @@
+import logging
+
 from django.core.validators import EmailValidator
 from django.db import models
 from django.db.models import Sum
 
 from base_models import BaseModel
+from del_corso import setup_logging
 from orders.enums.status_enum import OrderStatus
 from store.models.product import Product
 from store.validators import validate_phone_number
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 
 class Order(BaseModel):
@@ -32,6 +38,7 @@ class Order(BaseModel):
         total_amount = OrderItem.objects.filter(order=self).aggregate(Sum('subtotal'))['subtotal__sum']
         self.total_amount = total_amount
         self.save()
+        logger.info(f"Order {self.id} updated with total amount: {total_amount}")
 
     def __str__(self):
         return f"{self.last_name} {self.first_name} - {self.telephone_number}"
@@ -55,6 +62,7 @@ class OrderItem(BaseModel):
     def save(self, *args, **kwargs):
         self.subtotal = self.quantity * self.product.get_current_price()
         super().save(*args, **kwargs)
+        logger.info(f"OrderItem {self.pk} updated. Related Order - {self.order.id}")
 
         self.order.update_total_amount()
 

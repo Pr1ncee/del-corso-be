@@ -1,3 +1,5 @@
+import logging
+
 from django.apps import apps
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -5,7 +7,12 @@ from django.utils import timezone
 from django.core.validators import FileExtensionValidator
 
 from base_models import BaseModel
-from store.models.category import SeasonCategory, TypeCategory, Size, Color
+from store.models.category import (
+    SeasonCategory,
+    TypeCategory,
+    Size,
+    Color
+)
 from store.enums.material_enum import (
     UpperMaterialType,
     LiningMaterialType,
@@ -13,7 +20,11 @@ from store.enums.material_enum import (
     TrueToSizeType
 )
 
+from del_corso import setup_logging
 from del_corso.config import general_config
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 
 class Product(BaseModel):
@@ -86,7 +97,11 @@ class Product(BaseModel):
         self.in_stock = not curr_quantity
 
         super().save(*args, **kwargs)
+        logger.info(
+            f"Product object ({self.vendor_code} - {self.size.size}) updated. The product currently in stock: {self.in_stock}"
+        )
 
+        logger.info("Updating ProductSize related object...")
         product_size, created = ProductSize.objects.get_or_create(
             vendor_code=self.vendor_code,
             defaults={'vendor_code': self.vendor_code},
@@ -99,9 +114,13 @@ class Product(BaseModel):
         if (not self.in_stock or curr_quantity) and self.size:
             product_size.sizes.remove(self.size)
         product_size.save()
+        logger.info(
+            f"ProductSize object ({product_size.id}) updated successfully! The sizes are {product_size.sizes.all()}"
+        )
 
         if not product_size.sizes.all():
             product_size.delete()
+            logger.info(f"ProductSize ({product_size.id}) object deleted due to lack of sizes")
 
     def get_current_price(self) -> float | models.DecimalField | int:
         """Get product's current price considering a discount"""
@@ -119,8 +138,10 @@ class Product(BaseModel):
 
     @staticmethod
     def delete_related_productsize_size(vendor_code: str, size: Size) -> None:
+        logger.info(f"Removing size ({size}) from ProductSize object with vendor code `{vendor_code}`")
         product_size = ProductSize.objects.get(vendor_code=vendor_code)
         product_size.sizes.remove(size)
+        logger.info(f"Size {size} removed successfully!")
 
     class Meta:
         app_label = "store"
