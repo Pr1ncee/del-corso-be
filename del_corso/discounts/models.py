@@ -1,8 +1,14 @@
+import logging
+
 from django.db import models
 from django.shortcuts import get_object_or_404
 
 from base_models import BaseModel
+from del_corso import setup_logging
 from store.models.product import Product
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 
 class Discount(BaseModel):
@@ -21,8 +27,14 @@ class Discount(BaseModel):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        product = get_object_or_404(Product, vendor_code=self.name)
-        ProductDiscount.objects.create(product=product, discount=self)
+        logger.info(
+            f"Discount object {self.name}. Discount price - {self.discount_price}"
+        )
+        if not self.pk:
+            logger.info("Creating ProductDiscount object...")
+            product = get_object_or_404(Product, vendor_code=self.name)
+            product_discount = ProductDiscount.objects.create(product=product, discount=self)
+            logger.info(f"ProductDiscount object {product_discount.id} created successfully!")
 
     class Meta:
         verbose_name = "Скидка"

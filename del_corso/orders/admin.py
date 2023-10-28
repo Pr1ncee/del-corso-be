@@ -1,9 +1,15 @@
+import logging
+
 from django.contrib import admin
 from django.utils.html import format_html
 
+from del_corso import setup_logging
 from orders.enums.status_enum import OrderStatus
 from orders.forms import OrderStatusForm
 from orders.models import Order, OrderItem
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 
 @admin.register(Order)
@@ -17,7 +23,7 @@ class OrderAdmin(admin.ModelAdmin):
     action_form = OrderStatusForm
     actions = ("change_status", )
 
-    def colored_status(self, obj):
+    def colored_status(self, obj: Order):
         status_russian = obj.get_status_display()
 
         status_colors = {
@@ -34,7 +40,7 @@ class OrderAdmin(admin.ModelAdmin):
         return format_html(f'<span style="color: {color};">{status_russian}</span>')
     colored_status.short_description = "Статус"
 
-    def truncated_address(self, obj):
+    def truncated_address(self, obj: Order) -> str:
         max_length = 25
         if len(obj.address) > max_length:
             return obj.address[:max_length] + "..."
@@ -42,9 +48,10 @@ class OrderAdmin(admin.ModelAdmin):
     truncated_address.short_description = "Адрес"
 
     @admin.action(description="Изменить статус заказа")
-    def change_status(self, request, queryset):
+    def change_status(self, request, queryset: list[Order]) -> None:
         desired_status = OrderStatus[request.POST["status"].upper()]
         queryset.update(status=desired_status)
+        logging.info(f"Updated {len(queryset)} Order objects with new status: {desired_status}")
 
 
 @admin.register(OrderItem)

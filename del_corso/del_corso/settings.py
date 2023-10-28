@@ -182,7 +182,6 @@ JAZZMIN_SETTINGS = {
     "hide_models": [],
 }
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = email_config.EMAIL_HOST
 EMAIL_PORT = email_config.EMAIL_PORT
