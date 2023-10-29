@@ -13,6 +13,6 @@ class OrderViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         new_order = serializer.save()
 
-        send_new_order_notification_email(new_order_id=new_order.id)
+        send_new_order_notification_email.delay(new_order.id)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
