@@ -24,6 +24,26 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
 
+  redis:
+    image: redis:6.0.16-alpine
+    restart: always
+    env_file:
+      - ../../.env
+    ports:
+      - '6380:6379'
+    volumes:
+      - redis:/var/lib/redis/data
+
+  celery:
+    image: del-corso:latest
+    command: celery -A del_corso worker -l info
+    env_file:
+      - ../../.env
+    volumes:
+      - ../../del_corso/:/app/
+    depends_on:
+      - redis
+
   nginx:
     image: nginx:1.25-alpine
     ports:
@@ -35,3 +55,4 @@ services:
 
 volumes:
   postgres:
+  redis:

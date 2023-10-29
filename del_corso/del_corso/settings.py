@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from del_corso.config import postgres_config, general_config, email_config
+from del_corso.config import postgres_config, general_config, email_config, celery_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -188,3 +188,6 @@ EMAIL_PORT = email_config.EMAIL_PORT
 EMAIL_USE_TLS = email_config.EMAIL_USE_TLS
 EMAIL_HOST_USER = email_config.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = email_config.EMAIL_HOST_PASSWORD
+
+CELERY_BROKER_URL = celery_config.CELERY_BROKER_URL
+CELERY_TIMEZONE = general_config.TIME_ZONE

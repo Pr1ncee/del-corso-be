@@ -10,6 +10,7 @@ python-dotenv = "==1.0.0"
 psycopg2-binary = "==2.9.7"
 django-jazzmin = "==2.6.0"
 django-cors-headers = "==4.2.0"
+celery = {version = "==5.3.4", extras = ["redis"]}
 
 [dev-packages]
 

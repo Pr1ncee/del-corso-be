@@ -38,7 +38,14 @@ class EmailConfig:
     EMAIL_RECIPIENT_HOST = os.getenv("EMAIL_RECIPIENT_HOST")
 
 
+class CeleryConfig:
+    CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+    CELERY_MAX_RETRY = os.getenv("CELERY_MAX_RETRY", 3)
+    CELERY_RETRY_BACKOFF = os.getenv("CELERY_RETRY_BACKOFF", 60)
+
+
 general_config = GeneralConfig()
 postgres_config = PostgresConfig()
 admin_config = AdminConfig()
 email_config = EmailConfig()
+celery_config = CeleryConfig()
