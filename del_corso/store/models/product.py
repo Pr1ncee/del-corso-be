@@ -79,7 +79,7 @@ class Product(BaseModel):
         default="Турция",
         null=True
     )
-    guarantee_period = models.PositiveSmallIntegerField(verbose_name="Гарантийный срок", null=True)
+    guarantee_period = models.PositiveSmallIntegerField(verbose_name="Гарантийный срок (дней)", null=True)
     importer = models.CharField(max_length=200, verbose_name="Импортер", null=True)
     size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Размер", blank=True, null=True)
     in_stock = models.BooleanField(default=True, verbose_name="В наличии")

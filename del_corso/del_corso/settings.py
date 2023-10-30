@@ -8,10 +8,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = general_config.SECRET_KEY
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = general_config.DEBUG
-
 ALLOWED_HOSTS = []
+
+if (env := general_config.ENV.lower()) == "prod":
+    DEBUG = False
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+elif env == "dev":
+    DEBUG = True
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # Application definition
 INSTALLED_APPS = [
