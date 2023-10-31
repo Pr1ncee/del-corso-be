@@ -1,6 +1,8 @@
+from datetime import date
 from sys import stdout
 
 from discounts.models import Discount
+from orders.models import Order, OrderItem
 from store.enums.material_enum import LiningMaterialType
 from store.models import Product, Size, Color, TypeCategory, ProductSize
 
@@ -89,7 +91,26 @@ class PopulateDbBuilder:
         stdout.write("ProductSize objects have been created successfully!\n")
 
     def create_order(self):
-        pass
+        new_order = Order.objects.create(
+            first_name="Вася",
+            last_name="Пупкин",
+            surname="Васильевич",
+            country="Беларусь",
+            telephone_number="+375291234264",
+            email="vasya@gmail.com",
+            address="Улица Пушкино, дом Калатушкино",
+            order_date=date.today(),
+            total_amount=340.0,
+        )
+
+        OrderItem.objects.create(
+            order=new_order,
+            product=Product.objects.get(vendor_code="1111-1111"),
+            quantity=1,
+            subtotal=340.0,
+            size=36
+        )
+        stdout.write("New order has been created successfully!\n")
 
     def create_discount(self, dicsount_vendor_code: str):
         Discount.objects.create(
