@@ -8,7 +8,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -153,3 +152,5 @@ dmypy.json
 cython_debug/
 
 .idea/
+
+product_images/
