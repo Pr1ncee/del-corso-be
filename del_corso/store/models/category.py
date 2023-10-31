@@ -5,7 +5,7 @@ from base_models import BaseModel
 
 
 class SeasonCategory(BaseModel):
-    name = models.CharField(max_length=20, verbose_name="Название")
+    name = models.CharField(max_length=20, verbose_name="Название", unique=True, null=False)
 
     class Meta:
         app_label = "store"
@@ -17,7 +17,7 @@ class SeasonCategory(BaseModel):
 
 
 class TypeCategory(BaseModel):
-    name = models.CharField(max_length=20, verbose_name="Название")
+    name = models.CharField(max_length=20, verbose_name="Название", unique=True, null=False)
     is_popular = models.BooleanField(default=False, verbose_name="Популярная категория")
 
     class Meta:
@@ -35,7 +35,9 @@ class Size(BaseModel):
             MinValueValidator(35, message="Допустимый размер: 35-41."),
             MaxValueValidator(41, message="Допустимый размер: 35-41."),
         ],
-        verbose_name="Размер"
+        verbose_name="Размер",
+        unique=True,
+        null=False
     )
 
     def __str__(self):

@@ -17,7 +17,7 @@ class PostgresConfig:
 class GeneralConfig:
     SECRET_KEY = os.getenv("SECRET_KEY", "")
     DOMAIN_NAME = os.getenv("DOMAIN_NAME")
-    DEBUG = True
+    ENV = os.getenv("ENV", "dev")
     LANGUAGE_CODE = "ru"
     TIME_ZONE = "Europe/Moscow"
     TARGET_IMAGE_DIR = "product_images/"

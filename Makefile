@@ -42,6 +42,10 @@ migrate-down:
 init-admin:
 	docker compose exec $(DEL_CORSO_SERVICE) python ./del_corso/manage.py initadmin
 
+.PHONY: populate-db
+populate-db:
+	docker compose exec $(DEL_CORSO_SERVICE) python ./del_corso/manage.py populatedb
+
 .PHONY: docker-build-del-corso
 docker-build-del-corso:
 	docker build \
