@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from del_corso.config import postgres_config, general_config, email_config, celery_config
+from del_corso.config import postgres_config, general_config, email_config, redis_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
