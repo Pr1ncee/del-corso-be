@@ -1,13 +1,13 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from discounts import views
+from instagram import views
 
 
-app_name = 'discount'
+app_name = 'instagram'
 
 router = routers.DefaultRouter()
-router.register(r'discounted-products', views.DiscountViewSet, basename='discounted-products')
+router.register(r'get-latest-posts', views.PostViewSet, basename='get-latest-posts')
 
 
 urlpatterns = [

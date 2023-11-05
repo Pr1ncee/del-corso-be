@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 
 from store.management.builder import PreFillDbBuilder
 
@@ -10,5 +11,7 @@ class Command(BaseCommand):
         seasons = ["Зима", "Весна", "Лето", "Осень", "Деми"]
         colors = ["Красный", "Белый", "Черный", "Бежевый", "Розовый", "Серый"]
 
-        PreFillDbBuilder(categories=categories, sizes=sizes, seasons=seasons, colors=colors)
-
+        try:
+            PreFillDbBuilder(categories=categories, sizes=sizes, seasons=seasons, colors=colors)
+        except IntegrityError:
+            pass

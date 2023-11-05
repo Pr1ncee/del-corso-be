@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Custom(internal)
     "authorization",
     "discounts",
+    "instagram",
     "orders",
     "store",
 ]
@@ -201,5 +202,5 @@ EMAIL_USE_TLS = email_config.EMAIL_USE_TLS
 EMAIL_HOST_USER = email_config.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = email_config.EMAIL_HOST_PASSWORD
 
-CELERY_BROKER_URL = celery_config.CELERY_BROKER_URL
+CELERY_BROKER_URL = redis_config.REDIS_BROKER_URL
 CELERY_TIMEZONE = general_config.TIME_ZONE
