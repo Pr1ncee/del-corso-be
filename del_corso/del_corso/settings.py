@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     # Custom(internal)
     "authorization",
     "discounts",
-    "instagram",
     "orders",
     "store",
 ]
@@ -52,7 +51,9 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -94,6 +95,17 @@ DATABASES = {
         }
     }
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": redis_config.REDIS_BROKER_URL,
+    }
+}
+
+CACHE_MIDDLEWARE_ALIAS = "default"
+CACHE_MIDDLEWARE_SECONDS = general_config.CACHE_TIMEOUT_SECONDS  # Seconds
+CACHE_MIDDLEWARE_KEY_PREFIX = ""
 
 AUTH_PASSWORD_VALIDATORS = [
     {

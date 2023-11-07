@@ -17,6 +17,7 @@ class PostgresConfig:
 class GeneralConfig:
     SECRET_KEY = os.getenv("SECRET_KEY", "")
     DOMAIN_NAME = os.getenv("DOMAIN_NAME")
+    CACHE_TIMEOUT_SECONDS = int(os.getenv("CACHE_TIMEOUT_SECONDS", 600))
     ENV = os.getenv("ENV", "dev")
     LANGUAGE_CODE = "ru"
     TIME_ZONE = "Europe/Moscow"
@@ -39,7 +40,6 @@ class EmailConfig:
 
 
 class CeleryConfig:
-    CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
     CELERY_MAX_RETRY = os.getenv("CELERY_MAX_RETRY", 3)
     CELERY_RETRY_BACKOFF = os.getenv("CELERY_RETRY_BACKOFF", 60)
 
