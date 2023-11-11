@@ -84,9 +84,13 @@ class ProductAdmin(admin.ModelAdmin):
                 season = product_data.pop("season_category")
                 product_data["type_category"] = TypeCategory.objects.get(id=product_data["type_category"])
                 product_data["size"] = Size.objects.get(pk=int(product_data["size"]))
+                new_color = Color.objects.get(pk=int(color))
                 with transaction.atomic():
-                    new_product = Product.objects.create(**product_data, color=Color.objects.get(pk=int(color)))
+                    new_product = Product.objects.create(**product_data, color=new_color)
                     new_product.season_category.set(season)
+                    logger.info(
+                        f"New product {product.name} ({product.id}) created successfully with new color - {new_color.color}"
+                    )
 
     def get_urls(self):
         urls = super().get_urls()
