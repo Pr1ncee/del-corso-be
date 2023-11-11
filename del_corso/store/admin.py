@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib import admin, messages
+from django.db import transaction
 from django.forms import model_to_dict
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -8,7 +9,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 
 from del_corso.logging import setup_logging
-from store.forms import BulkUpdateProductSizeForm, BulkUpdateProductColorForm
+from store.forms import BulkUpdateProductSizeForm, ColorForm
 from store.inlines import ProductImage, ProductImageAdminInline
 from store.models import Product, SeasonCategory, Size, TypeCategory, Color
 from store.models.product import ProductSize
@@ -33,8 +34,9 @@ class ProductAdmin(admin.ModelAdmin):
         "quantity"
     )
     search_fields = ("id", "name", "price", "vendor_code")
-    actions = ("set_in_stock", "set_out_of_stock", "sell_one_product")
+    actions = ("set_in_stock", "set_out_of_stock", "sell_one_product", "duplicate_products_by_color")
     inlines = (ProductImageAdminInline, )
+    action_form = ColorForm
 
     def season_categories(self, obj: Product):
         return ", ".join([str(category) for category in obj.season_category.all()])
@@ -68,11 +70,28 @@ class ProductAdmin(admin.ModelAdmin):
         logger.info(f"Sold 1 pair for {len(queryset)} Product objects")
         self.message_user(request, "Количество выбранных товаров уменьшилось на 1 единицу для каждого товара")
 
+    @admin.action(description="Дублировать товар")
+    def duplicate_products_by_color(self, request, queryset: list[Product]):
+        colors: list[str] = request.POST.getlist("color", None)
+        if not colors:
+            logger.info(f"Got invalid POST body while duplicating products: {request.POST}. Aborting...")
+            self.message_user(request, "Выберите верное дейстие!")
+        for color in colors:
+            for product in queryset:
+                product_data = model_to_dict(product)
+                product_data.pop("color")
+                product_data.pop("id")
+                season = product_data.pop("season_category")
+                product_data["type_category"] = TypeCategory.objects.get(id=product_data["type_category"])
+                product_data["size"] = Size.objects.get(pk=int(product_data["size"]))
+                with transaction.atomic():
+                    new_product = Product.objects.create(**product_data, color=Color.objects.get(pk=int(color)))
+                    new_product.season_category.set(season)
+
     def get_urls(self):
         urls = super().get_urls()
         new_urls = [
             path('bulk-update-product-size/', self.bulk_update_product_size),
-            path('bulk-update-product-color/', self.bulk_update_product_color),
         ]
         return new_urls + urls
 
@@ -99,11 +118,12 @@ class ProductAdmin(admin.ModelAdmin):
                 product_data.pop("size")
 
                 for size, quantity in zip(selected_sizes, size_quantities.values()):
-                    new_product = Product(**product_data)
-                    new_product.size = size
-                    new_product.quantity = quantity
-                    new_product.save()
-                    new_product.season_category.set(season)
+                    with transaction.atomic():
+                        new_product = Product(**product_data)
+                        new_product.size = size
+                        new_product.quantity = quantity
+                        new_product.save()
+                        new_product.season_category.set(season)
 
                 logger.info(f"{selected_sizes} updated successfully!")
                 messages.success(request, "Размеры успешно добавлены к товару!")
@@ -116,20 +136,6 @@ class ProductAdmin(admin.ModelAdmin):
         form = BulkUpdateProductSizeForm()
         data = {"form": form}
         return render(request, "admin/store/product/bulk-update-product-size.html", data)
-
-    def bulk_update_product_color(self, request):
-        if request.method == "POST":
-            form = BulkUpdateProductColorForm(request.POST)
-            if form.is_valid():
-                pass
-
-            messages.success(request, "Цвета успешно добавлены к товару!")
-            url = reverse('admin:store_product_changelist')
-            return HttpResponseRedirect(url)
-
-        form = BulkUpdateProductColorForm()
-        data = {"form": form}
-        return render(request, "admin/store/product/bulk-update-product-color.html", data)
 
     def delete_model(self, request, obj):
         logger.info(

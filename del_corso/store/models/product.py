@@ -90,7 +90,7 @@ class Product(BaseModel):
     type_category = models.ForeignKey(TypeCategory, on_delete=models.CASCADE, verbose_name="Категория")
 
     def __str__(self):
-        return f"{self.vendor_code} - {self.price} ({self.size})"
+        return f"{self.vendor_code} - {self.price}р - {self.color} ({self.size})"
 
     def save(self, *args, **kwargs):
         curr_quantity = self.quantity < 1

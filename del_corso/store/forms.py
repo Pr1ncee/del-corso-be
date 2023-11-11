@@ -1,6 +1,7 @@
 import logging
 
 from django import forms
+from django.contrib.admin.helpers import ActionForm
 
 from del_corso import setup_logging
 from store.models import Product, Size, Color
@@ -45,9 +46,16 @@ class BulkUpdateProductSizeForm(forms.Form):
         return cleaned_data
 
 
-class BulkUpdateProductColorForm(forms.Form):
-    product = forms.ModelChoiceField(
-        queryset=Product.objects.order_by("-created_at"),
-        empty_label="Выберите товар",
-    )
-    colors = forms.ModelMultipleChoiceField(queryset=Color.objects.all(), widget=forms.CheckboxSelectMultiple)
+class ColorForm(ActionForm):
+    class Meta:
+        fields = ('color', )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        colors = Color.objects.all()
+        self.fields['color'] = forms.ModelMultipleChoiceField(
+            queryset=colors,
+            widget=forms.SelectMultiple,
+            required=False
+        )

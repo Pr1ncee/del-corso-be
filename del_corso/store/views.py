@@ -82,8 +82,10 @@ class SeasonCategoryViewSet(mixins.ListModelMixin,
 class ProductViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet):
-    serializer_class = ProductSizeSerializer
     pagination_class = PageNumberPagination
+
+    def get_serializer_class(self):
+        return ProductDetailedSerializer if self.action == "retrieve" else ProductSizeSerializer
 
     def get_queryset(self):
         queryset = ProductSize.objects.all()
@@ -126,6 +128,12 @@ class ProductViewSet(mixins.ListModelMixin,
 
         queryset = queryset.filter(products__in_stock=True)
         return queryset.distinct()
+
+    def retrieve(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        instance = Product.objects.get(pk=pk)
+        serializer = ProductDetailedSerializer(instance)
+        return Response(serializer.data)
 
     @action(detail=True, methods=["GET"], url_path="type-category")
     def get_products_by_type_category(self, request, pk: int = None | int):
