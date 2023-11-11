@@ -50,6 +50,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class BaseProductSerialzer(serializers.ModelSerializer):
+    color = ColorSerializer()
     season_categories = serializers.SerializerMethodField()
     type_category = TypeCategorySerializer()
     image_paths = serializers.SerializerMethodField()
@@ -98,21 +99,9 @@ class BaseProductSerialzer(serializers.ModelSerializer):
 
 
 class ProductSerializer(BaseProductSerialzer):
-    colors = serializers.SerializerMethodField()
-
-    def get_colors(self, obj):
-        colors = (
-            Product.objects
-            .select_related('color')
-            .filter(vendor_code=obj.vendor_code)
-            .values_list("color__color", flat=True)
-            .distinct()
-        )
-        return colors
-
     class Meta:
         model = Product
-        exclude = ("created_at", "updated_at", "size", "color")
+        exclude = ("created_at", "updated_at", "size", "season_category")
 
 
 class ProductSizeSerializer(serializers.ModelSerializer):
@@ -141,17 +130,6 @@ class ProductSizeSerializer(serializers.ModelSerializer):
 
 class ProductDetailedSerializer(BaseProductSerialzer):
     sizes = serializers.SerializerMethodField()
-    colors = serializers.SerializerMethodField()
-
-    def get_colors(self, obj):
-        colors = (
-            Product.objects
-            .select_related('color')
-            .filter(vendor_code=obj.vendor_code)
-            .values_list("color__color", flat=True)
-            .distinct()
-        )
-        return colors
 
     def get_sizes(self, obj):
         raw_sizes = ProductSize.objects.get(vendor_code=obj.vendor_code)
@@ -159,5 +137,5 @@ class ProductDetailedSerializer(BaseProductSerialzer):
 
     class Meta:
         model = Product
-        exclude = ("created_at", "updated_at", "size", "color")
+        exclude = ("created_at", "updated_at", "size", "season_category")
 
