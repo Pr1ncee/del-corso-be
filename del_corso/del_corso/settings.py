@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     # Third-party(external)
     "rest_framework",
+    "colorfield",
 
     # Custom(internal)
     "authorization",

@@ -1,4 +1,5 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
+from colorfield.fields import ColorField
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 
 from base_models import BaseModel
@@ -51,6 +52,12 @@ class Size(BaseModel):
 
 class Color(BaseModel):
     color = models.CharField(max_length=20, verbose_name="Цвет", unique=True, null=False)
+    hex_number = ColorField(
+        verbose_name="Выберите цвет",
+        validators=[
+            RegexValidator(regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$')
+        ]
+    )
 
     def __str__(self):
         return self.color

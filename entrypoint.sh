@@ -12,5 +12,5 @@ echo "Pre-filling the database with necessary data..."
 python del_corso/manage.py prefilldb
 echo "All the data created successfully!"
 
-echo "Starting development server..."
+echo "Starting the server..."
 python del_corso/manage.py runserver 0.0.0.0:8000
