@@ -28,7 +28,7 @@ class SizeSerializer(serializers.ModelSerializer):
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
-        exclude = ("created_at", "updated_at", "color")
+        exclude = ("created_at", "updated_at")
 
 
 class SeasonCategorySerializer(serializers.ModelSerializer):
