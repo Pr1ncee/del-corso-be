@@ -175,6 +175,12 @@ class ProductImage(BaseModel):
     def __str__(self):
         return f"{self.product.vendor_code} - {self.product.price}"
 
+    def delete(self, *args, **kwargs):
+        storage, path = self.image.storage, self.image.path
+        storage.delete(path)
+
+        super().delete(*args, **kwargs)
+
     class Meta:
         app_label = "store"
         verbose_name = "Изображение товара"
