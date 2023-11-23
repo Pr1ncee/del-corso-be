@@ -9,7 +9,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 
 from del_corso.logging import setup_logging
-from store.forms import BulkUpdateProductSizeForm, ColorForm
+from store.forms import BulkUpdateProductSizeForm, BulkRemoveSeasonCategoryForm, ColorForm
 from store.inlines import ProductImage, ProductImageAdminInline
 from store.models import Product, SeasonCategory, Size, TypeCategory, Color
 from store.models.product import ProductSize
@@ -43,7 +43,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     season_categories.short_description = "Сезон"
 
-    @admin.action(description="В наличии")
+    @admin.action(description="Добавить 1 товар")
     def set_in_stock(self, request, queryset: list[Product]) -> None:
         for product in queryset:
             product.in_stock = True
@@ -96,8 +96,34 @@ class ProductAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         new_urls = [
             path('bulk-update-product-size/', self.bulk_update_product_size),
+            path('bulk-remove-seasons/', self.bulk_remove_seasons)
         ]
         return new_urls + urls
+
+    def bulk_remove_seasons(self, request):
+        if request.method == "POST":
+            form = BulkRemoveSeasonCategoryForm(request.POST)
+            if form.is_valid():
+                seasons_to_remove: list[SeasonCategory] = form.cleaned_data.get("season_categories")
+                for season in seasons_to_remove:
+                    products = Product.objects.filter(season_category=season)
+                    for product in products:
+                        if not len(product.season_category.all()) > 1:
+                            product.quantity = 0
+                            product.in_stock = False
+                            product.save()
+                logger.info(f"{seasons_to_remove} are removed successfully!")
+                messages.success(request, "Сезоны успешно отключены!")
+
+                url = reverse('admin:store_product_changelist')
+                return HttpResponseRedirect(url)
+            else:
+                logger.error(f"Failed to remove the seasons. The form is invalid: {form.errors}")
+                messages.error(request, "Произошла ошибка. Пожалуйста, заполните данные еще раз")
+
+        form = BulkRemoveSeasonCategoryForm()
+        data = {"form": form}
+        return render(request, "admin/store/product/bulk-remove-seasons.html", data)
 
     def bulk_update_product_size(self, request):
         if request.method == "POST":

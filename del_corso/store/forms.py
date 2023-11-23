@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.admin.helpers import ActionForm
 
 from del_corso import setup_logging
-from store.models import Product, Size, Color
+from store.models import Product, Size, Color, SeasonCategory
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -44,6 +44,13 @@ class BulkUpdateProductSizeForm(forms.Form):
 
         cleaned_data['size_quantities'] = size_quantities
         return cleaned_data
+
+
+class BulkRemoveSeasonCategoryForm(forms.Form):
+    season_categories = forms.ModelMultipleChoiceField(
+        queryset=SeasonCategory.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
 
 
 class ColorForm(ActionForm):
