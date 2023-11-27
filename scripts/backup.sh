@@ -4,7 +4,7 @@ DATA_DIR=/data
 LOGS_DIR=$DATA_DIR/logs
 BACKUPS_DIR=/backups # It's a folder for all files that should be kept, including site_media, certbot etc.
 DOCKER_BACKUPS_DIR=/backups  # It's used for indicating a folder in a ocker container. Should be change both in docker-compose file and here.
-DOCKER_COMPOSE_FILE=$PROJECT_DIR/build/docker-compose/docker-compose.yaml
+DOCKER_COMPOSE_FILE=$PROJECT_DIR/build/docker-compose/docker-compose.yml
 LOG_FILE=$LOGS_DIR/del_corso_backup_process.log
 
 # Create the backup and logs directories.
