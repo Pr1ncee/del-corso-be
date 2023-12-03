@@ -1,5 +1,5 @@
 from django.db.models import Q
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -160,4 +160,26 @@ class ProductViewSet(mixins.ListModelMixin,
 
         products = Product.objects.filter(id__in=product_size_ids)
         serializer = ProductDetailedSerializer(products, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["GET"], url_path="search")
+    def search_products(self, request):
+        name = request.GET.get('name')
+        vendor_code = request.GET.get('vendor_code')
+
+        if not name and not vendor_code:
+            return Response(
+                data={"detail": "Provide at least one search parameter (name or vendor_code)"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        queryset = Product.objects.all()
+
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+
+        if vendor_code:
+            queryset = queryset.filter(vendor_code__icontains=vendor_code)
+
+        serializer = ProductDetailedSerializer(queryset, many=True)
         return Response(serializer.data)
