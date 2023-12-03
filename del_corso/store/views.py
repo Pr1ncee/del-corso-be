@@ -127,7 +127,7 @@ class ProductViewSet(mixins.ListModelMixin,
             queryset = queryset.filter(season_filters)
 
         queryset = queryset.filter(products__in_stock=True)
-        return queryset.distinct()
+        return queryset.distinct("vendor_code")
 
     def retrieve(self, request, *args, **kwargs):
         pk = kwargs.get('pk')

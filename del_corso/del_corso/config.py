@@ -17,7 +17,7 @@ class PostgresConfig:
 class GeneralConfig:
     SECRET_KEY = os.getenv("SECRET_KEY", "")
     DOMAIN_NAME = os.getenv("DOMAIN_NAME")
-    CACHE_TIMEOUT_SECONDS = int(os.getenv("CACHE_TIMEOUT_SECONDS", 600))
+    CACHE_TIMEOUT_SECONDS = int(os.getenv("CACHE_TIMEOUT_SECONDS", 300))
     ENV = os.getenv("ENV", "dev")
     LANGUAGE_CODE = "ru"
     TIME_ZONE = "Europe/Moscow"

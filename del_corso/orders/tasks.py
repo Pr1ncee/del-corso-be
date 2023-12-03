@@ -33,5 +33,6 @@ def send_new_order_notification_email(new_order_id: int) -> None:
             fail_silently=False,
         )
         logger.info("Email notification was sent successfully!")
-    except SMTPException:
+    except SMTPException as e:
+        raise e
         logger.info(f"Failed to send the email notification. The following error occurred: {str(exc_info()[1])}")
