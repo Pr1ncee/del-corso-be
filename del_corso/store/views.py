@@ -164,22 +164,16 @@ class ProductViewSet(mixins.ListModelMixin,
 
     @action(detail=False, methods=["GET"], url_path="search")
     def search_products(self, request):
-        name = request.GET.get('name')
-        vendor_code = request.GET.get('vendor_code')
+        keywords = request.GET.get('keywords')
 
-        if not name and not vendor_code:
+        if not keywords:
             return Response(
-                data={"detail": "Provide at least one search parameter (name or vendor_code)"},
+                data={"detail": "You must provide one search parameter (keywords)"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         queryset = Product.objects.all()
-
-        if name:
-            queryset = queryset.filter(name__icontains=name)
-
-        if vendor_code:
-            queryset = queryset.filter(vendor_code__icontains=vendor_code)
+        queryset = queryset.filter(Q(name__icontains=keywords) | Q(vendor_code__icontains=keywords))
 
         serializer = ProductDetailedSerializer(queryset, many=True)
         return Response(serializer.data)
