@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url "admin:index" %}">Del Corso</a>
+        &rsaquo; <a href="{% url "admin:store_product_changelist" %}">Товар</a>
+        &rsaquo; Отключить сезоны
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="custom-form">
+        <form action="." method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <h5 for="id_product">Выберите один или несколько сезонов:</h5>
+            </div>
+            <div style="margin-left: 10px; margin-top: 5px;">
+                {{ form.season_categories }}
+            </div>
+            <button class="btn" type="submit" style="
+                    background: #007BFF;
+                    color: #FFF;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    margin-top: 30px;
+            ">Отключить сезон(ы)</button>
+        </form>
+    </div>
+{% endblock %}
