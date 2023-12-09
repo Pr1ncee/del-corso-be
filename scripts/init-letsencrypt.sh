@@ -6,7 +6,7 @@ domains=(delcorso.by)
 rsa_key_size=4096
 data_path="../data/certbot"
 email="" # Adding a valid address is strongly recommended
-staging=1 # Set to 1 if you're testing your setup to avoid hitting request limits
+staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 path_to_docker_compose="../build/docker-compose/docker-compose.yml"
 
 if [ -d "$data_path" ]; then
@@ -62,6 +62,7 @@ case "$email" in
 esac
 
 # Enable staging mode if needed
+staging_arg=""
 if [ $staging != "0" ]; then staging_arg="--staging"; fi
 
 docker compose -f "$path_to_docker_compose" run --rm --entrypoint "\
@@ -75,4 +76,4 @@ docker compose -f "$path_to_docker_compose" run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker compose -f "$path_to_docker_compose" exec nginx:latest nginx -s reload
+docker compose -f "$path_to_docker_compose" exec nginx nginx -s reload
