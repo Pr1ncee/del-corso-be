@@ -4,7 +4,7 @@ set -euf
 
 domains=(delcorso.by)
 rsa_key_size=4096
-data_path="./data/certbot"
+data_path="../data/certbot"
 email="" # Adding a valid address is strongly recommended
 staging=1 # Set to 1 if you're testing your setup to avoid hitting request limits
 path_to_docker_compose="../build/docker-compose/docker-compose.yml"
