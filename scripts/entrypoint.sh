@@ -4,6 +4,9 @@ echo "Applying migrations..."
 python /app/del_corso/manage.py migrate
 echo "All migrations applied!"
 
+echo "Collecting static files..."
+python /app/del_corso/manage.py collectstatic --no-input
+
 echo "Creating admin user..."
 python /app/del_corso/manage.py initadmin
 echo "The admin user has successfully created!"

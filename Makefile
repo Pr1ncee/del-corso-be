@@ -29,6 +29,10 @@ docker-logs:
 docker-connect:
 	docker compose exec -it $(DEL_CORSO_SERVICE) /bin/bash
 
+.PHONY: collectstatic
+collectstatic: # This command collects static files into a single location for serving
+	docker compose exec web-ui python manage.py collectstatic --no-input
+
 .PHONY: makemigrations
 makemigrations:
 	docker compose exec $(DEL_CORSO_SERVICE) python ./del_corso/manage.py makemigrations
