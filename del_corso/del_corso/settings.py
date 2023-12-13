@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from del_corso.config import postgres_config, general_config, email_config, redis_config
@@ -8,15 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = general_config.SECRET_KEY
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["delcorso.by", "165.227.169.122:8000", "165.227.169.122"]
+CSRF_TRUSTED_ORIGINS = ["https://delcorso.by"]
 
 if (env := general_config.ENV.lower()) == "prod":
-    DEBUG = False
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
 elif env == "dev":
     DEBUG = True
     ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
@@ -217,3 +214,8 @@ EMAIL_HOST_PASSWORD = email_config.EMAIL_HOST_PASSWORD
 
 CELERY_BROKER_URL = redis_config.REDIS_BROKER_URL
 CELERY_TIMEZONE = general_config.TIME_ZONE
+
+STATIC_ROOT = '/static-files/'
+
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '/app/')
