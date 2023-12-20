@@ -15,6 +15,7 @@ services:
     volumes:
       - ../../:/app/
       - /static/:/static-files/
+      - /product_images/:/app/product_images/
 
   postgres:
     image: postgres:14.1-alpine
