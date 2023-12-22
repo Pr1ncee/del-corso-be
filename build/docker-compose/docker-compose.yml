@@ -46,22 +46,22 @@ services:
     depends_on:
       - redis
 
-#  nginx:
-#    image: nginx:latest
-#    ports:
-#      - "80:80"
-#      - "8011:8011"
-#      - "443:443"
-#    depends_on:
-#      - del_corso
-#    restart: always
-#    volumes:
-#      - ../../nginx/nginx.conf:/etc/nginx/nginx.conf
-#      - ../../data/certbot/conf:/etc/letsencrypt
-#      - ../../data/certbot/www:/var/www/certbot
-#      - ../../product_images/:/usr/share/nginx/html/
-#      - /static/:/static/
-#    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "8011:8011"
+      - "443:443"
+    depends_on:
+      - del_corso
+    restart: always
+    volumes:
+      - ../../nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ../../data/certbot/conf:/etc/letsencrypt
+      - ../../data/certbot/www:/var/www/certbot
+      - ../../product_images/:/usr/share/nginx/html/
+      - /static/:/static/
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
 volumes:
   postgres:
