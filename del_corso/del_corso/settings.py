@@ -215,7 +215,7 @@ EMAIL_HOST_PASSWORD = email_config.EMAIL_HOST_PASSWORD
 CELERY_BROKER_URL = redis_config.REDIS_BROKER_URL
 CELERY_TIMEZONE = general_config.TIME_ZONE
 
-STATIC_ROOT = '/static-files/'
+STATIC_ROOT = '/'
 
 MEDIA_URL = '/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '/app/')

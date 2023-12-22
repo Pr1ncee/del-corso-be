@@ -14,7 +14,7 @@ services:
     restart: on-failure
     volumes:
       - ../../:/app/
-      - /static/:/static-files/
+      - /static/:/
       - /product_images/:/app/product_images/
 
   postgres:
