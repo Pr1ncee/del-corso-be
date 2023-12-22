@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = general_config.SECRET_KEY
 
-ALLOWED_HOSTS = ["delcorso.by", "165.227.169.122:8000", "165.227.169.122"]
+ALLOWED_HOSTS = ["delcorso.by", "165.227.169.122:8000", "165.227.169.122", "localhost"]
 CSRF_TRUSTED_ORIGINS = ["https://delcorso.by"]
 
 if (env := general_config.ENV.lower()) == "prod":
