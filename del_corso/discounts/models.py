@@ -33,8 +33,10 @@ class Discount(BaseModel):
         )
         if not is_new:
             logger.info("Creating ProductDiscount object...")
-            product = get_object_or_404(Product, vendor_code=self.name)
-            product_discount = ProductDiscount.objects.create(product=product, discount=self)
+            products = Product.objects.filter(vendor_code=self.name)
+            product_discount = ProductDiscount.objects.create(discount=self)
+            [product_discount.products.add(product) for product in products]
+            product_discount.save()
             logger.info(f"ProductDiscount object {product_discount.id} created successfully!")
 
     class Meta:
@@ -43,11 +45,11 @@ class Discount(BaseModel):
 
 
 class ProductDiscount(BaseModel):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
+    products = models.ManyToManyField(Product, verbose_name="Товары")
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE, verbose_name="Скидка")
 
     def __str__(self):
-        return f"{self.discount.name} on {self.product.name}"
+        return f"{self.discount.name} on {self.products}"
 
     class Meta:
         verbose_name = "Скидка на товар"

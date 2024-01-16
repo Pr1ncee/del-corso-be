@@ -83,7 +83,7 @@ class BaseProductSerialzer(serializers.ModelSerializer):
     def get_discount(self, obj):
         product_discount_model = apps.get_model('discounts', 'ProductDiscount')
         active_discount = product_discount_model.objects.filter(
-            product=obj,
+            products=obj,
             discount__start_date__lte=timezone.now().date(),
             discount__end_date__gte=timezone.now().date()
         ).first()

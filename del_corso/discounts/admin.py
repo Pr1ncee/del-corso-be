@@ -13,5 +13,9 @@ class DiscountAdmin(admin.ModelAdmin):
 @admin.register(ProductDiscount)
 class ProductDiscountAdmin(admin.ModelAdmin):
     model = ProductDiscount
-    list_display = ("product", "discount")
+    list_display = ("product_vendor_code", "discount")
     search_fields = ("product__name", "discount__name", "discount__discount_price")
+
+    def product_vendor_code(self, obj):
+        return obj.products.first().vendor_code
+    product_vendor_code.short_description = 'Products'

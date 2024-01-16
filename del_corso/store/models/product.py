@@ -45,20 +45,25 @@ class Product(BaseModel):
         max_length=50,
         choices=LiningMaterialType.choices,
         verbose_name="Материал подкладки",
+        default=LiningMaterialType.GENUINE_LEATHER,
         null=True,
     )
     heel_height = models.FloatField(null=True,
+                                    blank=True,
                                     validators=[
                                         MinValueValidator(0,
                                                           message="Высота каблука должна быть положительным значением")
                                     ],
-                                    verbose_name="Высота каблука")
+                                    verbose_name="Высота каблука (см)",
+                                    )
     sole_height = models.FloatField(null=True,
+                                    blank=True,
                                     validators=[
                                         MinValueValidator(0,
                                                           message="Высота подошвы должна быть положительным значением")
                                     ],
-                                    verbose_name="Высота подошвы")
+                                    verbose_name="Высота подошвы (см)",
+                                    )
     completeness = models.CharField(
         max_length=50,
         choices=CompletenessType.choices,
@@ -77,10 +82,11 @@ class Product(BaseModel):
         max_length=50,
         verbose_name="Страна производства",
         default="Турция",
-        null=True
+        null=True,
+        blank=True
     )
-    guarantee_period = models.PositiveSmallIntegerField(verbose_name="Гарантийный срок (дней)", null=True)
-    importer = models.CharField(max_length=200, verbose_name="Импортер", null=True)
+    guarantee_period = models.PositiveSmallIntegerField(verbose_name="Гарантийный срок (дней)", default=30, null=True)
+    importer = models.CharField(max_length=200, verbose_name="Импортер", null=True, blank=True)
     size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Размер", blank=True, null=True)
     in_stock = models.BooleanField(default=True, verbose_name="В наличии")
     quantity = models.PositiveSmallIntegerField(verbose_name="Количество", default=2)
