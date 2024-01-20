@@ -6,4 +6,4 @@ from banners.models import BannerImage
 @admin.register(BannerImage)
 class ProductImageAdmin(admin.ModelAdmin):
     model = BannerImage
-    list_display = ("main", "popular_categories")
+    list_display = ("main", "season_category")
