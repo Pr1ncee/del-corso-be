@@ -8,6 +8,7 @@ class UpperMaterialType(BaseEnum):
 class LiningMaterialType(BaseEnum):
     NATURAL_FUR = "Natural fur", "Натуральный мех"
     BAIZE = "Baize", "Байка"
+    GENUINE_LEATHER = "Genuine leather", "Натуральная кожа"
 
 
 class CompletenessType(BaseEnum):

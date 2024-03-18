@@ -14,6 +14,8 @@ services:
     restart: on-failure
     volumes:
       - ../../:/app/
+      - /static/:/static-files/
+      - /usr/share/nginx/html/product_images/:/app/product_images/
 
   postgres:
     image: postgres:14.1-alpine
@@ -44,30 +46,6 @@ services:
       - ../../del_corso/:/app/
     depends_on:
       - redis
-
-  nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-      - "8011:8011"
-      - "443:443"
-    depends_on:
-      - del_corso
-    restart: always
-    volumes:
-      - ../../nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ../../data/certbot/conf:/etc/letsencrypt
-      - ../../data/certbot/www:/var/www/certbot
-      - ../../product_images/:/usr/share/nginx/html/
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ../../data/certbot/conf:/etc/letsencrypt
-      - ../../data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-
 
 volumes:
   postgres:

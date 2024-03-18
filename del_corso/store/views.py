@@ -156,6 +156,7 @@ class ProductViewSet(mixins.ListModelMixin,
     @action(detail=False, methods=["GET"], url_path="get-products")
     def bulk_retrieve_products(self, request):
         raw_product_size_ids = request.GET.getlist('products')
+        # TODO Add validation here
         product_size_ids = [int(_id) for _id in raw_product_size_ids[0].split(',')]
 
         products = Product.objects.filter(id__in=product_size_ids)

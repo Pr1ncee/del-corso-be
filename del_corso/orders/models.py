@@ -24,7 +24,9 @@ class Order(BaseModel):
         validators=[
             EmailValidator(message='Введите действительный адрес электронной почты.'),
         ],
-        verbose_name="Электронный адрес"
+        verbose_name="Электронный адрес",
+        blank=True,
+        null=True
     )
     comment = models.TextField(blank=True, null=True, verbose_name="Комментарий к заказу")
     address = models.TextField(verbose_name="Адрес")

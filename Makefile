@@ -7,7 +7,7 @@ DOTENV_BASE_FILE ?= .env
 
 
 .PHONY: docker-build-all
-docker-build-all: docker-build-del-corso docker-build-nginx
+docker-build-all: docker-build-del-corso
 
 .PHONY: docker-restart
 docker-restart: docker-down docker-up
@@ -28,6 +28,10 @@ docker-logs:
 .PHONY: docker-connect
 docker-connect:
 	docker compose exec -it $(DEL_CORSO_SERVICE) /bin/bash
+
+.PHONY: collectstatic
+collectstatic: # This command collects static files into a single location for serving
+	docker compose exec web-ui python manage.py collectstatic --no-input
 
 .PHONY: makemigrations
 makemigrations:
@@ -54,11 +58,4 @@ docker-build-del-corso:
 	docker build \
 		--tag=del-corso \
 		--file=build/docker/del-corso/Dockerfile-del-corso \
-		./
-
-.PHONY: docker-build-nginx
-docker-build-nginx:
-	docker build \
-		--tag=nginx \
-		--file=build/docker/nginx/Dockerfile-nginx \
 		./
