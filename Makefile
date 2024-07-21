@@ -6,8 +6,8 @@ DOTENV_BASE_FILE ?= .env
 -include $(DOTENV_BASE_FILE)
 
 
-.PHONY: docker-build-all
-docker-build-all: docker-build-del-corso
+.PHONY: start
+start: docker-build-del-corso docker-up
 
 .PHONY: docker-restart
 docker-restart: docker-down docker-up

@@ -11,9 +11,5 @@ class LiningMaterialType(BaseEnum):
     GENUINE_LEATHER = "Genuine leather", "Натуральная кожа"
 
 
-class CompletenessType(BaseEnum):
-    AVERAGE = "Average", "Средняя"
-
-
 class TrueToSizeType(BaseEnum):
     EXACT_SIZE = "Exact size", "Размер в размер"

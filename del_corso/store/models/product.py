@@ -1,7 +1,6 @@
 import logging
 
 from django.apps import apps
-from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
@@ -16,7 +15,6 @@ from store.models.category import (
 from store.enums.material_enum import (
     UpperMaterialType,
     LiningMaterialType,
-    CompletenessType,
     TrueToSizeType
 )
 
@@ -46,29 +44,6 @@ class Product(BaseModel):
         choices=LiningMaterialType.choices,
         verbose_name="Материал подкладки",
         default=LiningMaterialType.GENUINE_LEATHER,
-        null=True,
-    )
-    heel_height = models.FloatField(null=True,
-                                    blank=True,
-                                    validators=[
-                                        MinValueValidator(0,
-                                                          message="Высота каблука должна быть положительным значением")
-                                    ],
-                                    verbose_name="Высота каблука (см)",
-                                    )
-    sole_height = models.FloatField(null=True,
-                                    blank=True,
-                                    validators=[
-                                        MinValueValidator(0,
-                                                          message="Высота подошвы должна быть положительным значением")
-                                    ],
-                                    verbose_name="Высота подошвы (см)",
-                                    )
-    completeness = models.CharField(
-        max_length=50,
-        choices=CompletenessType.choices,
-        verbose_name="Полнота",
-        default=CompletenessType.AVERAGE,
         null=True,
     )
     true_to_size = models.CharField(
@@ -104,7 +79,7 @@ class Product(BaseModel):
 
         super().save(*args, **kwargs)
         logger.info(
-            f"Product object ({self.vendor_code} - {self.size.size}) updated. The product currently in stock: {self.in_stock}"
+            f"Product object ({self.vendor_code} - {self.size}) updated. The product currently in stock: {self.in_stock}"
         )
 
         logger.info("Updating ProductSize related object...")
@@ -145,9 +120,10 @@ class Product(BaseModel):
     @staticmethod
     def delete_related_productsize_size(vendor_code: str, size: Size) -> None:
         logger.info(f"Removing size ({size}) from ProductSize object with vendor code `{vendor_code}`")
-        product_size = ProductSize.objects.get(vendor_code=vendor_code)
-        product_size.sizes.remove(size)
-        logger.info(f"Size {size} removed successfully!")
+        product_size = ProductSize.objects.filter(vendor_code=vendor_code).first()
+        if product_size:
+            product_size.sizes.remove(size)
+            logger.info(f"Size {size} removed successfully!")
 
     class Meta:
         app_label = "store"

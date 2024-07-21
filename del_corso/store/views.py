@@ -136,7 +136,7 @@ class ProductViewSet(mixins.ListModelMixin,
         return Response(serializer.data)
 
     @action(detail=True, methods=["GET"], url_path="type-category")
-    def get_products_by_type_category(self, request, pk: int = None | int):
+    def get_products_by_type_category(self, request, pk: int | None = None):
         products = ProductSize.objects.filter(products__type_category__id=pk).distinct()
         serializer = self.get_serializer(products, many=True)
         return Response(serializer.data)

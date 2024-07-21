@@ -9,7 +9,6 @@ python /app/del_corso/manage.py collectstatic --no-input
 
 echo "Creating admin user..."
 python /app/del_corso/manage.py initadmin
-echo "The admin user has successfully created!"
 
 echo "Pre-filling the database with necessary data..."
 python /app/del_corso/manage.py prefilldb

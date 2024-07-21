@@ -5,8 +5,7 @@ from rest_framework import serializers
 from store.enums.material_enum import (
     TrueToSizeType,
     UpperMaterialType,
-    LiningMaterialType,
-    CompletenessType
+    LiningMaterialType
 )
 from store.models import (
     Size,
@@ -56,12 +55,8 @@ class BaseProductSerialzer(serializers.ModelSerializer):
     image_paths = serializers.SerializerMethodField()
     discount = serializers.SerializerMethodField()
     true_to_size = serializers.SerializerMethodField()
-    completeness = serializers.SerializerMethodField()
     upper_material = serializers.SerializerMethodField()
     lining_material = serializers.SerializerMethodField()
-
-    def get_completeness(self, obj):
-        return CompletenessType.get_description(obj.completeness)
 
     def get_lining_material(self, obj):
         return LiningMaterialType.get_description(obj.lining_material)
