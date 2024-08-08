@@ -132,7 +132,7 @@ class Product(BaseModel):
 
 
 class ProductSize(BaseModel):
-    vendor_code = models.CharField(max_length=100, verbose_name="Артикул", default="-")
+    vendor_code = models.CharField(max_length=100, verbose_name="Артикул", default="-", unique=True)
     products = models.ManyToManyField(Product, verbose_name="Товары", null=True, blank=True)
     sizes = models.ManyToManyField(Size, verbose_name="Размеры в наличии")
 
