@@ -135,6 +135,9 @@ class ProductSizeSerializer(serializers.ModelSerializer):
                 'end_date': active_discount.discount.end_date,
             }
 
+        product_images = product.productimage_set.all()
+        image_paths = [image.image.path.split("/")[-1] for image in product_images]
+
         return {
             "id": product.id,
             "color": {
@@ -161,7 +164,8 @@ class ProductSizeSerializer(serializers.ModelSerializer):
             "guarantee_period": product.guarantee_period,
             "importer": product.importer,
             "in_stock": product.in_stock,
-            "quantity": product.quantity
+            "quantity": product.quantity,
+            "image_paths": image_paths
         }
 
     class Meta:
