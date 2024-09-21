@@ -102,7 +102,7 @@ class ProductSerializer(BaseProductSerialzer):
 class ProductSizeSerializer(serializers.ModelSerializer):
     sizes = serializers.SerializerMethodField()
     colors = serializers.SerializerMethodField()
-    products = ProductSerializer(many=True)
+    products = serializers.SerializerMethodField()
 
     def get_colors(self, obj):
         colors = (
@@ -117,6 +117,52 @@ class ProductSizeSerializer(serializers.ModelSerializer):
     def get_sizes(self, obj):
         sizes = obj.sizes.all().values_list("size", flat=True)
         return sizes
+
+    def get_products(self, obj):
+        product = obj.products.first()
+
+        product_discount_model = apps.get_model('discounts', 'ProductDiscount')
+        active_discount = product_discount_model.objects.filter(
+            products=product,
+            discount__start_date__lte=timezone.now().date(),
+            discount__end_date__gte=timezone.now().date()
+        ).first()
+        discount = {}
+        if active_discount:
+            discount = {
+                'discount_price': active_discount.discount.discount_price,
+                'start_date': active_discount.discount.start_date,
+                'end_date': active_discount.discount.end_date,
+            }
+
+        return {
+            "id": product.id,
+            "color": {
+                "id": product.color.id,
+                "color": product.color.color,
+                "hex_number": product.color.hex_number
+            },
+            "season_categories": [season.name for season in product.season_category.all()],
+            "type_category": {
+                "id": product.type_category.id,
+                "name": product.type_category.name,
+                "is_popular": product.type_category.is_popular
+            },
+            "discount": discount,
+            "true_to_size": product.true_to_size,
+            "upper_material": product.upper_material,
+            "lining_material": product.lining_material,
+            "name": product.name,
+            "price": product.price,
+            "description": product.description,
+            "vendor_code": product.vendor_code,
+            "new_collection": product.new_collection,
+            "country_of_origin": product.country_of_origin,
+            "guarantee_period": product.guarantee_period,
+            "importer": product.importer,
+            "in_stock": product.in_stock,
+            "quantity": product.quantity
+        }
 
     class Meta:
         model = ProductSize

@@ -9,7 +9,8 @@ from store.serializers import (
     ColorSerializer,
     TypeCategorySerializer,
     SeasonCategorySerializer,
-    ProductSizeSerializer, ProductDetailedSerializer,
+    ProductSizeSerializer,
+    ProductDetailedSerializer,
 )
 from store.models import (
     Size,
@@ -146,9 +147,9 @@ class ProductViewSet(mixins.ListModelMixin,
         product_type = request.GET.get('type')
         if product_type:
             new_collection_products = ProductSize.objects.filter(Q(products__new_collection=True)
-                                                                 & Q(products__type_category__name=product_type))
+                                                                 & Q(products__type_category__name=product_type)).distinct("vendor_code")
         else:
-            new_collection_products = ProductSize.objects.filter(products__new_collection=True)
+            new_collection_products = ProductSize.objects.filter(products__new_collection=True).distinct("vendor_code")
 
         serializer = self.get_serializer(new_collection_products, many=True)
         return Response(serializer.data)
