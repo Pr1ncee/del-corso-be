@@ -178,14 +178,11 @@ class ProductDetailedSerializer(BaseProductSerialzer):
     colors = serializers.SerializerMethodField()
 
     def get_colors(self, obj):
-        models = Product.objects.filter(vendor_code=obj.vendor_code).exclude(id=obj.id)
-        return [
-            {
-                "color": product.color.color,
-                "id": product.id,
-                "hex_number": product.color.hex_number
-            } for product in models
-        ]
+        return {
+            "color": obj.color.color,
+            "id": obj.color.id,
+            "hex_number": obj.color.hex_number
+        }
 
     def get_sizes(self, obj):
         raw_sizes = ProductSize.objects.get(vendor_code=obj.vendor_code)
